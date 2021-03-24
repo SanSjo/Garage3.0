@@ -14,7 +14,7 @@ namespace Garage3._0.Models
         public int Id { get; set; }
 
         [Required]
-        public Member Member { get; set; }
+        public Member Owner { get; set; }
 
         [Display(Name = "Parking spot")]
         public IList<ParkingSpace> ParkedAt { get; set; }
