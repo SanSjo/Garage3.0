@@ -7,7 +7,7 @@ namespace Garage3._0.Models
 {
     public class MembershipType
     {
-        public string? Type { get; set; }
-        public decimal? Discount { get; set; }
+        public string Type { get; set; }
+        public decimal Discount { get; set; }
     }
 }
