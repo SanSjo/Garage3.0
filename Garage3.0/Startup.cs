@@ -26,8 +26,8 @@ namespace Garage3._0
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddScoped<IRetrieveVehicleService, RetrieveVehicleService>();
-            services.AddScoped<IVehicleTypeService, VehicleTypeService>();
+            //services.AddScoped<IRetrieveVehicleService, RetrieveVehicleService>();
+            //services.AddScoped<IVehicleTypeService, VehicleTypeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

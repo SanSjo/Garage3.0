@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Garage3._0</RootNamespace>
+    <StartupObject>Garage3._0.Program</StartupObject>
   </PropertyGroup>
 
 </Project>
