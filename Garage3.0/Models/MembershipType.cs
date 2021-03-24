@@ -13,7 +13,7 @@ namespace Garage3.Models
         public string Type { get; set; }
 
         // TODO: What is a good value to have here?
-        [Column(TypeName = "decimal(65,30)")]
+        [Column(TypeName = "decimal(18,4)")]
         public decimal Discount { get; set; }
     }
 }

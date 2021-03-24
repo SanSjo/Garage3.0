@@ -1,33 +1,33 @@
-﻿//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-//using GarageMVC.Data;
+using Garage3.Data;
 
-//using Microsoft.AspNetCore.Mvc.Rendering;
-//using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace Garage3.Services
 {
-//namespace GarageMVC.Services
-//{
-//    public class VehicleTypeService : IVehicleTypeService
-//    {
-//        private readonly GarageMVCContext db;
+    namespace GarageMVC.Services
+    {
+        public class VehicleTypeService : IVehicleTypeService
+        {
+            private readonly Garage3Context db;
 
-//        public VehicleTypeService(GarageMVCContext context)
-//        {
-//            db = context;
-//        }
+            public VehicleTypeService(Garage3Context context)
+            {
+                db = context;
+            }
 
-//        public async Task<IEnumerable<SelectListItem>> GetVehicleTypes()
-//        {
-//            return await db.VehicleType.OrderBy(v => v.Name).Select(r => new SelectListItem
-//            {
-//                Text = r.Name.ToString(),
-//                Value = r.Name.ToString()
-//            }).ToListAsync();
-//        }
-//    }
-//}
+            public async Task<IEnumerable<SelectListItem>> GetVehicleTypes()
+            {
+                return await db.VehicleType.OrderBy(v => v.VehicleType).Select(r => new SelectListItem
+                {
+                    Text = r.VehicleType.ToString(),
+                    Value = r.VehicleType.ToString()
+                }).ToListAsync();
+            }
+        }
+    }
 }

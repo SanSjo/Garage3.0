@@ -24,9 +24,9 @@ namespace Garage3.Models
         public DateTime ArrivalTime { get; set; }
 
         [Required]
-        [Display(Name = "Registration number")]
+        [Display(Name = "License Number")]
         [Remote(action: "VehicleIsNotParked", controller: "Vehicles", ErrorMessage = "This Vehicle is Already Parked")]
-        public string RegistrationNumber { get; set; }
+        public string LicenseNumber { get; set; }
 
         [Required]
         [MaxLength(10, ErrorMessage = "10 characters max")]

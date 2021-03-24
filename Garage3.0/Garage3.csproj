@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>Garage3.0</RootNamespace>
+    <RootNamespace>Garage3</RootNamespace>
     <StartupObject>Garage3.Program</StartupObject>
     <AssemblyName>Garage3</AssemblyName>
   </PropertyGroup>

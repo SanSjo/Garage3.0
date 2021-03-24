@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garage3.Migrations
 {
     [DbContext(typeof(Garage3Context))]
-    partial class Garage3_0ContextModelSnapshot : ModelSnapshot
+    partial class Garage3ContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,7 @@ namespace Garage3.Migrations
 
             modelBuilder.Entity("Garage3.Models.Member", b =>
                 {
-                    b.Property<int>("MemberPK")
+                    b.Property<int>("MemberID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -32,9 +32,6 @@ namespace Garage3.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IDNumber")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Joined")
                         .HasColumnType("datetime2");
 
@@ -44,7 +41,10 @@ namespace Garage3.Migrations
                     b.Property<string>("MembershipTypeType")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("MemberPK");
+                    b.Property<string>("PersonalIdentityNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MemberID");
 
                     b.HasIndex("MembershipTypeType");
 
@@ -57,7 +57,7 @@ namespace Garage3.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,4)");
 
                     b.HasKey("Type");
 
@@ -66,12 +66,18 @@ namespace Garage3.Migrations
 
             modelBuilder.Entity("Garage3.Models.ParkingSpace", b =>
                 {
-                    b.Property<int>("PK")
+                    b.Property<int>("ParkingSpaceID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.HasKey("PK");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("int");
+
+                    b.HasKey("ParkingSpaceID");
 
                     b.ToTable("ParkingSpace");
                 });
@@ -105,22 +111,19 @@ namespace Garage3.Migrations
                         .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<int?>("OwnerMemberPK")
+                    b.Property<int?>("OwnerMemberID")
                         .HasColumnType("int");
 
-                    b.Property<string>("RegistrationNumber")
+                    b.Property<string>("LicenseNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Size")
-                        .HasColumnType("int");
 
                     b.Property<string>("VehicleTypeType")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerMemberPK");
+                    b.HasIndex("OwnerMemberID");
 
                     b.HasIndex("VehicleTypeType");
 
@@ -142,15 +145,15 @@ namespace Garage3.Migrations
 
             modelBuilder.Entity("ParkingSpaceVehicle", b =>
                 {
-                    b.Property<int>("ParkedAtPK")
+                    b.Property<int>("ParkedAtParkingSpaceID")
                         .HasColumnType("int");
 
-                    b.Property<int>("VehiclesId")
+                    b.Property<int>("VehicleId")
                         .HasColumnType("int");
 
-                    b.HasKey("ParkedAtPK", "VehiclesId");
+                    b.HasKey("ParkedAtParkingSpaceID", "VehicleId");
 
-                    b.HasIndex("VehiclesId");
+                    b.HasIndex("VehicleId");
 
                     b.ToTable("ParkingSpaceVehicle");
                 });
@@ -168,7 +171,7 @@ namespace Garage3.Migrations
                 {
                     b.HasOne("Garage3.Models.Member", "Owner")
                         .WithMany()
-                        .HasForeignKey("OwnerMemberPK");
+                        .HasForeignKey("OwnerMemberID");
 
                     b.HasOne("Garage3.Models.VehicleType", "VehicleType")
                         .WithMany()
@@ -183,13 +186,13 @@ namespace Garage3.Migrations
                 {
                     b.HasOne("Garage3.Models.ParkingSpace", null)
                         .WithMany()
-                        .HasForeignKey("ParkedAtPK")
+                        .HasForeignKey("ParkedAtParkingSpaceID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Garage3.Models.Vehicle", null)
                         .WithMany()
-                        .HasForeignKey("VehiclesId")
+                        .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

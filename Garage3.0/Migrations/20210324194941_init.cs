@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Garage3.Migrations
 {
-    public partial class init2 : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,7 +12,7 @@ namespace Garage3.Migrations
                 columns: table => new
                 {
                     Type = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Discount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Discount = table.Column<decimal>(type: "decimal(18,4)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -23,12 +23,14 @@ namespace Garage3.Migrations
                 name: "ParkingSpace",
                 columns: table => new
                 {
-                    PK = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                    ParkingSpaceID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Number = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ParkingSpace", x => x.PK);
+                    table.PrimaryKey("PK_ParkingSpace", x => x.ParkingSpaceID);
                 });
 
             migrationBuilder.CreateTable(
@@ -47,9 +49,9 @@ namespace Garage3.Migrations
                 name: "Member",
                 columns: table => new
                 {
-                    MemberPK = table.Column<int>(type: "int", nullable: false)
+                    MemberID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IDNumber = table.Column<int>(type: "int", nullable: false),
+                    PersonalIdentityNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MembershipTypeType = table.Column<string>(type: "nvarchar(450)", nullable: true),
@@ -58,7 +60,7 @@ namespace Garage3.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Member", x => x.MemberPK);
+                    table.PrimaryKey("PK_Member", x => x.MemberID);
                     table.ForeignKey(
                         name: "FK_Member_MembershipType_MembershipTypeType",
                         column: x => x.MembershipTypeType,
@@ -73,24 +75,23 @@ namespace Garage3.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OwnerMemberPK = table.Column<int>(type: "int", nullable: true),
+                    OwnerMemberID = table.Column<int>(type: "int", nullable: true),
                     ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RegistrationNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LicenseNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Color = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     Brand = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Model = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     NumberOfWheels = table.Column<int>(type: "int", nullable: false),
-                    VehicleTypeType = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Size = table.Column<int>(type: "int", nullable: false)
+                    VehicleTypeType = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Vehicle", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Vehicle_Member_OwnerMemberPK",
-                        column: x => x.OwnerMemberPK,
+                        name: "FK_Vehicle_Member_OwnerMemberID",
+                        column: x => x.OwnerMemberID,
                         principalTable: "Member",
-                        principalColumn: "MemberPK",
+                        principalColumn: "MemberID",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Vehicle_VehicleType_VehicleTypeType",
@@ -104,21 +105,21 @@ namespace Garage3.Migrations
                 name: "ParkingSpaceVehicle",
                 columns: table => new
                 {
-                    ParkedAtPK = table.Column<int>(type: "int", nullable: false),
-                    VehiclesId = table.Column<int>(type: "int", nullable: false)
+                    ParkedAtParkingSpaceID = table.Column<int>(type: "int", nullable: false),
+                    VehicleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ParkingSpaceVehicle", x => new { x.ParkedAtPK, x.VehiclesId });
+                    table.PrimaryKey("PK_ParkingSpaceVehicle", x => new { x.ParkedAtParkingSpaceID, x.VehicleId });
                     table.ForeignKey(
-                        name: "FK_ParkingSpaceVehicle_ParkingSpace_ParkedAtPK",
-                        column: x => x.ParkedAtPK,
+                        name: "FK_ParkingSpaceVehicle_ParkingSpace_ParkedAtParkingSpaceID",
+                        column: x => x.ParkedAtParkingSpaceID,
                         principalTable: "ParkingSpace",
-                        principalColumn: "PK",
+                        principalColumn: "ParkingSpaceID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ParkingSpaceVehicle_Vehicle_VehiclesId",
-                        column: x => x.VehiclesId,
+                        name: "FK_ParkingSpaceVehicle_Vehicle_VehicleId",
+                        column: x => x.VehicleId,
                         principalTable: "Vehicle",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -130,14 +131,14 @@ namespace Garage3.Migrations
                 column: "MembershipTypeType");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ParkingSpaceVehicle_VehiclesId",
+                name: "IX_ParkingSpaceVehicle_VehicleId",
                 table: "ParkingSpaceVehicle",
-                column: "VehiclesId");
+                column: "VehicleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vehicle_OwnerMemberPK",
+                name: "IX_Vehicle_OwnerMemberID",
                 table: "Vehicle",
-                column: "OwnerMemberPK");
+                column: "OwnerMemberID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Vehicle_VehicleTypeType",
