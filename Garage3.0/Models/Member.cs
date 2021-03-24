@@ -8,9 +8,9 @@ namespace Garage3.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int MemberPK { get; set; }
+        public int MemberID { get; set; }
 
-        public string IDNumber { get; set; }
+        public string PersonalIdentityNumber { get; set; }
 
         public string FirstName { get; set; }
 
