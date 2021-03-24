@@ -5,16 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Garage3._0.Models
+namespace Garage3.Models
 {
-    public class BookedTimes
+    public class Booking
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int PK { get; set; }
+        public int BookingId { get; set; }
 
-        public DateTime BookedTime { get; set; }
-        public IList<ParkingSpace> SpaceOccupied { get; set; }
-        public Member Member { get; set; }
+        public DateTime BookedTime { get; set; }        
+        public Member BookedBy { get; set; }
     }
 }

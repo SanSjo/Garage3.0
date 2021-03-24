@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Garage3._0.Models
+namespace Garage3.Models
 {
     public class Member
     {
@@ -10,7 +10,7 @@ namespace Garage3._0.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int MemberPK { get; set; }
 
-        public int IDNumber { get; set; }
+        public string IDNumber { get; set; }
 
         public string FirstName { get; set; }
 

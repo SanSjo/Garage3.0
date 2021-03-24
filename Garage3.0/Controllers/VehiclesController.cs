@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Garage3._0.Data;
+using Garage3.Data;
 
-namespace Garage3._0.Models
+namespace Garage3.Models
 {
     public class VehiclesController : Controller
     {
-        private readonly Garage3_0Context _context;
+        private readonly Garage3Context _context;
 
-        public VehiclesController(Garage3_0Context context)
+        public VehiclesController(Garage3Context context)
         {
             _context = context;
         }

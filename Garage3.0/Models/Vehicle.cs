@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace Garage3._0.Models
+namespace Garage3.Models
 {
     public class Vehicle
     {

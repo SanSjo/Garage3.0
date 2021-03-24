@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Garage3._0.Migrations
+namespace Garage3.Migrations
 {
     public partial class init2 : Migration
     {

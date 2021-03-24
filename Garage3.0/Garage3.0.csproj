@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>Garage3._0</RootNamespace>
-    <StartupObject>Garage3._0.Program</StartupObject>
+    <RootNamespace>Garage3.0</RootNamespace>
+    <StartupObject>Garage3.Program</StartupObject>
+    <AssemblyName>Garage3</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Garage3._0": {
+    "Garage3": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,

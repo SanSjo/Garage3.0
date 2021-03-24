@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Garage3._0.Services
+namespace Garage3.Services
 {
     public interface IVehicleTypeService
     {

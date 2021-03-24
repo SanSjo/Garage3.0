@@ -7,7 +7,7 @@
 //using Microsoft.AspNetCore.Mvc.Rendering;
 //using Microsoft.EntityFrameworkCore;
 
-namespace Garage3._0.Services
+namespace Garage3.Services
 {
 //namespace GarageMVC.Services
 //{
