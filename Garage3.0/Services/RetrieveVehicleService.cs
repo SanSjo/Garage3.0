@@ -7,6 +7,8 @@
 //using Microsoft.AspNetCore.Mvc.Rendering;
 //using Microsoft.EntityFrameworkCore;
 
+namespace Garage3._0.Services
+{
 //namespace GarageMVC.Services
 //{
 //    public class RetrieveVehicleService : IRetrieveVehicleService
@@ -28,3 +30,4 @@
 //        }
 //    }
 //}
+}

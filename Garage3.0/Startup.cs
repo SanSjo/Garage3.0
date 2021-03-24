@@ -1,4 +1,4 @@
-using GarageMVC.Services;
+using Garage3._0.Services;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Garage3._0.Data;
 
 namespace Garage3._0
 {
@@ -26,6 +28,9 @@ namespace Garage3._0
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddDbContext<Garage3_0Context>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("Garage3_0Context")));
             //services.AddScoped<IRetrieveVehicleService, RetrieveVehicleService>();
             //services.AddScoped<IVehicleTypeService, VehicleTypeService>();
         }
