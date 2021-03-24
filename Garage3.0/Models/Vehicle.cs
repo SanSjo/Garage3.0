@@ -16,7 +16,7 @@ namespace Garage3.Models
         [Required]
         public Member Owner { get; set; }
 
-        [Display(Name = "Parking spot")]
+        [Display(Name = "Parking space")]
         public IList<ParkingSpace> ParkedAt { get; set; }
 
         [Display(Name = "Arrival time")]
@@ -47,7 +47,5 @@ namespace Garage3.Models
 
         [Display(Name = "Vehicle type")]
         public VehicleType VehicleType { get; set; }
-
-        public int Size { get; set; }
     }
 }
