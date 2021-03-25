@@ -50,6 +50,7 @@ namespace Garage3.Controllers
                 });
             }
 
+            // BUG: Cant handle 1 char names.. we need to add a validation on name length
             filteredList = filteredList.OrderBy(m => m.FirstName.Substring(0, 2), StringComparer.Ordinal).ToList();
             
             return View(filteredList);
