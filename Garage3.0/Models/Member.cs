@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,6 +11,8 @@ namespace Garage3.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int MemberID { get; set; }
 
+        
+        [Remote(action: "IsAlreadyAMember", controller: "Member", ErrorMessage = "Nagot gick fel")]        
         public string PersonalIdentityNumber { get; set; }
 
         public string FirstName { get; set; }
