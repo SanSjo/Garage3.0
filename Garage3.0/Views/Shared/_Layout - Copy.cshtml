@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Garage 3</title>
+    <title>Bootstrap 4 Template with Sidebar Menu</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500&display=swap">
@@ -15,9 +15,15 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" href="~/css/jquery.mCustomScrollbar.min.css">
     <link rel="stylesheet" href="~/css/animate.css">
-    <link rel="stylesheet" href="~/css/site.css">
+    <link rel="stylesheet" href="~/css/style.css">
     <link rel="stylesheet" href="~/css/media-queries.css">
-    
+
+    <!-- Favicon and touch icons -->
+    <link rel="shortcut icon" href="~/ico/favicon.png">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="~/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="~/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="~/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="~/ico/apple-touch-icon-57-precomposed.png">
 </head>
 
 <body>
@@ -37,26 +43,22 @@
                 </li>
                 <li>
                     <a href="#vehicleSection" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" role="button" aria-controls="vehicleSection">
-                        <i class="fas fa-car"></i>Vehicles
-                    </a>
+                        <i class="fas fa-car"></i>Vehicles</a>
                     <ul class="collapse list-unstyled" id="vehicleSection">
                         <li>
                             <a asp-controller="Vehicles" asp-action="Index">Vehicle Overview</a>
                         </li>
                         <li>
-                            <a asp-controller="Vehicles" asp-action="ParkVehicle">Park a vehicle</a>
+                            <a asp-controller="" asp-action="">Park a vehicle</a>
                         </li>
                         <li>
-                            <a asp-controller="Vehicles" asp-action="RetrieveVehicle">Retrieve a vehicle</a>
+                            <a asp-controller="" asp-action="">Retrieve a vehicle</a>
                         </li>
                         <li>
-                            <a asp-controller="Vehicles" asp-action="RegisterVehicle">Register a new vehicle</a>
+                            <a asp-controller="" asp-action="">Register a new vehicle</a>
                         </li>
                         <li>
-                            <a asp-controller="Vehicles" asp-action="UnregisterVehicle">Unregister a vehicle</a>
-                        </li>
-                        <li>
-                            <a asp-controller="Vehicles" asp-action="EditVehicle">Edit a vehicle</a>
+                            <a asp-controller="" asp-action="">Unregister a vehicle</a>
                         </li>
                     </ul>
                 </li>
@@ -66,30 +68,31 @@
                     </a>
                     <ul class="collapse list-unstyled" id="memberSection">
                         <li>
-                            <a asp-controller="Members" asp-action="Index">Member Overview</a>
+                            <a asp-controller="" asp-action="">Member Overview</a>
                         </li>
                         <li>
-                            <a asp-controller="Members" asp-action="RegisterMember">Register a member</a>
+                            <a asp-controller="" asp-action="">Register a member</a>
                         </li>
                         <li>
-                            <a asp-controller="Members" asp-action="UnregisterMember">Unregister a member</a>
+                            <a asp-controller="" asp-action="">Unregister a member</a>
                         </li>
                         <li>
-                            <a asp-controller="Members" asp-action="EditMember">Edit a member</a>
+                            <a asp-controller="" asp-action="">Edit a member</a>
                         </li>
                     </ul>
+                </li>                
+                <li>
+                    <a asp-controller="" asp-action=""><i class="fas fa-percent"></i> Statistics</a>
                 </li>
                 <li>
-                    <a asp-controller="Statistics" asp-action="Index"><i class="fas fa-percent"></i> Statistics</a>
-                </li>
-                <li>
-                    <a asp-controller="Administration" asp-action="Index"><i class="fas fa-cog"></i> Administration</a>
-                </li>
+                    <a asp-controller="" asp-action=""><i class="fas fa-cog"></i> Administration</a>
+                </li>                
             </ul>
         </nav>
         <!-- End sidebar -->
+
         <!-- Content -->
-        <div class="content">
+        <div class="content">            
             @RenderBody()
             <!-- Footer -->
             <footer class="footer">
