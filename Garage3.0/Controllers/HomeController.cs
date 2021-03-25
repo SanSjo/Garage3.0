@@ -17,13 +17,23 @@ namespace Garage3.Controllers
         {
             _logger = logger;
         }
+        public IActionResult Welcome()
+        {
+            return View();
+        }
 
         public IActionResult Index()
         {
             return View();
         }
 
+
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult Administration()
         {
             return View();
         }

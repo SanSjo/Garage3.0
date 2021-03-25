@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Garage3.Models.Member>
+﻿@model IEnumerable<Garage3.Models.MembersViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,12 +9,16 @@
 <p>
     <a asp-action="CreateMember">Create New</a>
 </p>
+
+<form>
+    <p>
+        Search members: <input type="text" name="Search" />
+        <input type="submit" value="Filter" />
+    </p>
+</form>
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.PersonalIdentityNumber)
-            </th>
             <th>
                 @Html.DisplayNameFor(model => model.FirstName)
             </th>
@@ -22,20 +26,13 @@
                 @Html.DisplayNameFor(model => model.LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Joined)
+                @Html.DisplayNameFor(model => model.NrOfVehicles)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ExtendedMemberShipEndDate)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PersonalIdentityNumber)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FirstName)
             </td>
@@ -43,10 +40,7 @@
                 @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Joined)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExtendedMemberShipEndDate)
+                @Html.DisplayFor(modelItem => item.NrOfVehicles)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.MemberID">Edit</a> |

@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+
 using Garage3.Data;
 using Garage3.Models;
-using System.Text.RegularExpressions;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Garage3.Controllers
 {
@@ -21,9 +21,37 @@ namespace Garage3.Controllers
         }
 
         // GET: Members
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search)
         {
-            return View(await _context.Member.ToListAsync());
+            var members = from m in _context.Member select m;
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                var searchParams = search.Split();
+
+                foreach (string s in searchParams)
+                {
+                    members = members.Where(m => m.FirstName.Contains(s) || m.LastName.Contains(s));
+                }
+            }
+
+            List<MembersViewModel> filteredList = new List<MembersViewModel>();
+            
+            foreach (Member m in members)
+            {
+                filteredList.Add(new MembersViewModel()
+                {
+                    MemberID = m.MemberID,
+                    FirstName = m.FirstName,
+                    LastName = m.LastName,
+                    NrOfVehicles = (from vehicle in _context.Vehicle.Where(v => v.Owner.Equals(m)) select vehicle)
+                                                      .ToList().Count
+                });
+            }
+
+            filteredList = filteredList.OrderBy(m => m.FirstName.Substring(0, 2), StringComparer.Ordinal).ToList();
+            
+            return View(filteredList);
         }
 
         // GET: Members/Details/5
@@ -50,11 +78,10 @@ namespace Garage3.Controllers
             return View();
         }
 
-
         [AcceptVerbs("GET", "POST")]
         public IActionResult IsAlreadyAMember(string PersonalIdentityNumber)
         {
-            if(Regex.IsMatch(PersonalIdentityNumber, @"[^0-9-]"))
+            if (Regex.IsMatch(PersonalIdentityNumber, @"[^0-9-]"))
             {
                 return Json("Refrain from using anything other than numbers");
             }
@@ -69,11 +96,11 @@ namespace Garage3.Controllers
             {
                 return Json("To few numbers.");
             }
-            
-            string PINDate = PINformat.Substring(0, 8);
-            DateTime customerAge = DateTime.ParseExact(PINDate,"yyyyMMdd",System.Globalization.CultureInfo.InvariantCulture);
 
-            if (customerAge  >  DateTime.Now.AddYears(-18))
+            string PINDate = PINformat.Substring(0, 8);
+            DateTime customerAge = DateTime.ParseExact(PINDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+
+            if (customerAge > DateTime.Now.AddYears(-18))
             {
                 return Json("Too Young");
             }
@@ -84,9 +111,8 @@ namespace Garage3.Controllers
 
         }
 
-        // POST: Members/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Members/Create To protect from overposting attacks, enable the specific properties
+        // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateMember([Bind("MemberID,PersonalIdentityNumber,FirstName,LastName,Joined,ExtendedMemberShipEndDate")] Member member)
@@ -109,7 +135,6 @@ namespace Garage3.Controllers
                 {
                     member.ExtendedMemberShipEndDate = DateTime.Now.AddDays(30);
                 }
-
 
                 _context.Add(member);
                 await _context.SaveChangesAsync();
@@ -134,9 +159,8 @@ namespace Garage3.Controllers
             return View(member);
         }
 
-        // POST: Members/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Members/Edit/5 To protect from overposting attacks, enable the specific properties
+        // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("MemberID,PersonalIdentityNumber,FirstName,LastName,Joined,ExtendedMemberShipEndDate")] Member member)

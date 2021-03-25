@@ -9,8 +9,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Garage3.Services
 {
-    namespace GarageMVC.Services
-    {
         public class VehicleTypeService : IVehicleTypeService
         {
             private readonly Garage3Context db;
@@ -28,6 +26,5 @@ namespace Garage3.Services
                     Value = r.VehicleType.ToString()
                 }).ToListAsync();
             }
-        }
-    }
+        }    
 }
