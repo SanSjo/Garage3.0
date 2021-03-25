@@ -106,7 +106,10 @@ namespace Garage3.Controllers
                 return Json("Too Young");
             }
 
-            return Json(PINformat);
+
+            //return Json(PINformat);
+            return Json(true);
+
         }
 
         // POST: Members/Create To protect from overposting attacks, enable the specific properties
@@ -117,8 +120,22 @@ namespace Garage3.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 member.Joined = DateTime.Now;
-                member.ExtendedMemberShipEndDate = DateTime.Now.AddDays(30);
+
+
+                string PINformat = Regex.Replace(member.PersonalIdentityNumber, @"[^0-9]", "");
+                string PINDate = PINformat.Substring(0, 8);
+                DateTime customerAge = DateTime.ParseExact(PINDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+
+                if (customerAge < DateTime.Now.AddYears(-65))
+                {
+                    member.ExtendedMemberShipEndDate = DateTime.Now.AddYears(2);
+                }
+                else
+                {
+                    member.ExtendedMemberShipEndDate = DateTime.Now.AddDays(30);
+                }
 
                 db.Add(member);
                 await db.SaveChangesAsync();
