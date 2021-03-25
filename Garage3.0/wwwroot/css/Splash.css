@@ -1,0 +1,10 @@
+﻿body {
+    background-color: black;
+    height: 100%
+}
+
+.btn-primary {
+    background: #4B5A61;
+    border: none;
+    box-shadow: 6px 6px 6px #691b1b;
+}
