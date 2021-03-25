@@ -31,8 +31,8 @@ namespace Garage3
 
             services.AddDbContext<Garage3Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("Garage3_0Context")));
-            //services.AddScoped<IRetrieveVehicleService, RetrieveVehicleService>();
-            //services.AddScoped<IVehicleTypeService, VehicleTypeService>();
+            services.AddScoped<IRetrieveVehicleService, RetrieveVehicleService>();
+            services.AddScoped<IVehicleTypeService, VehicleTypeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,7 +60,7 @@ namespace Garage3
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Welcome}/{id?}");
             });
         }
     }
