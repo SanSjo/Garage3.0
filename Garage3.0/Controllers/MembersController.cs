@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -13,17 +14,17 @@ namespace Garage3.Controllers
 {
     public class MembersController : Controller
     {
-        private readonly Garage3Context _context;
+        private readonly Garage3Context db;
 
         public MembersController(Garage3Context context)
         {
-            _context = context;
+            db = context;
         }
 
         // GET: Members
         public async Task<IActionResult> Index(string search)
         {
-            var members = from m in _context.Member select m;
+            var members = from m in db.Member select m;
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -44,7 +45,7 @@ namespace Garage3.Controllers
                     MemberID = m.MemberID,
                     FirstName = m.FirstName,
                     LastName = m.LastName,
-                    NrOfVehicles = (from vehicle in _context.Vehicle.Where(v => v.Owner.Equals(m)) select vehicle)
+                    NrOfVehicles = (from vehicle in db.Vehicle.Where(v => v.Owner.Equals(m)) select vehicle)
                                                       .ToList().Count
                 });
             }
@@ -62,7 +63,7 @@ namespace Garage3.Controllers
                 return NotFound();
             }
 
-            var member = await _context.Member
+            var member = await db.Member
                 .FirstOrDefaultAsync(m => m.MemberID == id);
             if (member == null)
             {
@@ -119,8 +120,8 @@ namespace Garage3.Controllers
                 member.Joined = DateTime.Now;
                 member.ExtendedMemberShipEndDate = DateTime.Now.AddDays(30);
 
-                _context.Add(member);
-                await _context.SaveChangesAsync();
+                db.Add(member);
+                await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(member);
@@ -134,7 +135,7 @@ namespace Garage3.Controllers
                 return NotFound();
             }
 
-            var member = await _context.Member.FindAsync(id);
+            var member = await db.Member.FindAsync(id);
             if (member == null)
             {
                 return NotFound();
@@ -157,8 +158,8 @@ namespace Garage3.Controllers
             {
                 try
                 {
-                    _context.Update(member);
-                    await _context.SaveChangesAsync();
+                    db.Update(member);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -184,7 +185,7 @@ namespace Garage3.Controllers
                 return NotFound();
             }
 
-            var member = await _context.Member
+            var member = await db.Member
                 .FirstOrDefaultAsync(m => m.MemberID == id);
             if (member == null)
             {
@@ -199,15 +200,15 @@ namespace Garage3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var member = await _context.Member.FindAsync(id);
-            _context.Member.Remove(member);
-            await _context.SaveChangesAsync();
+            var member = await db.Member.FindAsync(id);
+            db.Member.Remove(member);
+            await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool MemberExists(int id)
         {
-            return _context.Member.Any(e => e.MemberID == id);
+            return db.Member.Any(e => e.MemberID == id);
         }
     }
 }
