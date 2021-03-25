@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Garage3.Controllers;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,7 +13,7 @@ namespace Garage3.Models
         public int MemberID { get; set; }
 
         
-        [Remote(action: "IsAlreadyAMember", controller: "Member", ErrorMessage = "Nagot gick fel")]        
+        [Remote(action: nameof(MembersController.IsAlreadyAMember), controller: "Members")]        
         public string PersonalIdentityNumber { get; set; }
 
         public string FirstName { get; set; }

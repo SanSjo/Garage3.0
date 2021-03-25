@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage3.Data;
 using Garage3.Models;
-
+using System.Text.RegularExpressions;
 
 namespace Garage3.Controllers
 {
@@ -54,7 +54,34 @@ namespace Garage3.Controllers
         [AcceptVerbs("GET", "POST")]
         public IActionResult IsAlreadyAMember(string PersonalIdentityNumber)
         {
-            return Json($"Email is already in use.");
+            if(Regex.IsMatch(PersonalIdentityNumber, @"[^0-9-]"))
+            {
+                return Json("Refrain from using anything other than numbers");
+            }
+
+            string PINformat = Regex.Replace(PersonalIdentityNumber, @"[^0-9]", "");
+
+            if (PINformat.Length > 12)
+            {
+                return Json("Too many numbers.");
+            }
+            else if (PINformat.Length < 12)
+            {
+                return Json("To few numbers.");
+            }
+            
+            string PINDate = PINformat.Substring(0, 8);
+            DateTime customerAge = DateTime.ParseExact(PINDate,"yyyyMMdd",System.Globalization.CultureInfo.InvariantCulture);
+
+            if (customerAge  >  DateTime.Now.AddYears(-18))
+            {
+                return Json("Too Young");
+            }
+            
+
+            return Json(PINformat);
+
+
         }
 
         // POST: Members/Create
