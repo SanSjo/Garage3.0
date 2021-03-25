@@ -21,9 +21,37 @@ namespace Garage3.Controllers
         }
 
         // GET: Members
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search)
         {
-            return View(await _context.Member.ToListAsync());
+            var members = from m in _context.Member select m;
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                var searchParams = search.Split();
+
+                foreach (string s in searchParams)
+                {
+                    members = members.Where(m => m.FirstName.Contains(s) || m.LastName.Contains(s));
+                }
+            }
+
+            List<MembersViewModel> filteredList = new List<MembersViewModel>();
+            
+            foreach (Member m in members)
+            {
+                filteredList.Add(new MembersViewModel()
+                {
+                    MemberID = m.MemberID,
+                    FirstName = m.FirstName,
+                    LastName = m.LastName,
+                    NrOfVehicles = (from vehicle in _context.Vehicle.Where(v => v.Owner.Equals(m)) select vehicle)
+                                                      .ToList().Count
+                });
+            }
+
+            filteredList = filteredList.OrderBy(m => m.FirstName.Substring(0, 2), StringComparer.Ordinal).ToList();
+            
+            return View(filteredList);
         }
 
         // GET: Members/Details/5
