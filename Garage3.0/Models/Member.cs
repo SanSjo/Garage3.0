@@ -12,10 +12,11 @@ namespace Garage3.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int MemberID { get; set; }
 
-        
+        // TODO: check PID so that the month and day are valid numbers
         [Remote(action: nameof(MembersController.IsAlreadyAMember), controller: "Members")]        
         public string PersonalIdentityNumber { get; set; }
 
+        // TODO: Add check that first name isnt the same as last name
         public string FirstName { get; set; }
 
         public string LastName { get; set; }

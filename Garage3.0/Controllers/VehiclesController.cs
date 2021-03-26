@@ -29,6 +29,7 @@ namespace Garage3.Models
             {
                 list.Add(new VehicleOverviewViewModel()
                 {
+                    // BUG: doesnt work
                     VehicleID = v.Id,
                     Owner = $"{v.Owner.FirstName} {v.Owner.LastName}",
                     MembershipType = v.Owner.MembershipType.Type,

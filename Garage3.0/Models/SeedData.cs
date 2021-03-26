@@ -20,7 +20,7 @@ namespace Garage3.Models
                 }
                 context.MembershipType.AddRange(
                     new MembershipType { Type = "Pro", Discount = 10 },
-                    new MembershipType { Type = "Member", Discount = 0 }
+                    new MembershipType { Type = "Standard", Discount = 0 }
                   );
 
             vehicleTypeGen:
@@ -61,15 +61,16 @@ namespace Garage3.Models
             {
                 if (!context.Member.Any())
                 {
+                    var standard = context.MembershipType.FirstOrDefault(x => x.Type == "Standard");
+                    var pro = context.MembershipType.FirstOrDefault(x => x.Type == "Pro");
+
                     context.Member.AddRange(
-
-                            new Member { PersonalIdentityNumber = "198002309876", FirstName = "Conny", LastName = "Andersson", Joined = DateTime.Parse("2021-03-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-04-01") },
-                            new Member { PersonalIdentityNumber = "198102309876", FirstName = "Berta", LastName = "Svennson", Joined = DateTime.Parse("2021-03-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-04-01") },
-                            new Member { PersonalIdentityNumber = "198202309876", FirstName = "David", LastName = "Nokto", Joined = DateTime.Parse("2021-03-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-04-01") },
-                            new Member { PersonalIdentityNumber = "198302309876", FirstName = "Anita", LastName = "Berg", Joined = DateTime.Parse("2021-03-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-04-01") },
-                            new Member { PersonalIdentityNumber = "193002309876", FirstName = "Stefan", LastName = "Karlsson", Joined = DateTime.Parse("2021-03-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-04-01") }
+                            new Member { PersonalIdentityNumber = "198002309876", FirstName = "Conny", LastName = "Andersson", Joined = DateTime.Parse("2020-03-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-02-01"), MembershipType = standard },
+                            new Member { PersonalIdentityNumber = "198102309876", FirstName = "Berta", LastName = "Svennson", Joined = DateTime.Parse("2021-01-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-05-06"), MembershipType = pro },
+                            new Member { PersonalIdentityNumber = "198202309876", FirstName = "David", LastName = "Nokto", Joined = DateTime.Parse("2018-11-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-03-12"), MembershipType = standard },
+                            new Member { PersonalIdentityNumber = "198302309876", FirstName = "Anita", LastName = "Berg", Joined = DateTime.Parse("2019-06-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-03-24"), MembershipType = standard },
+                            new Member { PersonalIdentityNumber = "193002309876", FirstName = "Stefan", LastName = "Karlsson", Joined = DateTime.Parse("2021-03-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-04-01"), MembershipType = pro }
                         );
-
                     context.SaveChanges();
                 }
             }
