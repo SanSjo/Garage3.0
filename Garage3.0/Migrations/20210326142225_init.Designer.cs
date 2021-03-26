@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garage3.Migrations
 {
     [DbContext(typeof(Garage3Context))]
-    [Migration("20210324194941_init")]
+    [Migration("20210326142225_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,26 @@ namespace Garage3.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Garage3.Models.Booking", b =>
+                {
+                    b.Property<int>("BookingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("BookedByMemberID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("BookedTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("BookingId");
+
+                    b.HasIndex("BookedByMemberID");
+
+                    b.ToTable("Booking");
+                });
 
             modelBuilder.Entity("Garage3.Models.Member", b =>
                 {
@@ -104,6 +124,10 @@ namespace Garage3.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
+                    b.Property<string>("LicenseNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Model")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -115,10 +139,6 @@ namespace Garage3.Migrations
 
                     b.Property<int?>("OwnerMemberID")
                         .HasColumnType("int");
-
-                    b.Property<string>("LicenseNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("VehicleTypeType")
                         .HasColumnType("nvarchar(450)");
@@ -158,6 +178,15 @@ namespace Garage3.Migrations
                     b.HasIndex("VehicleId");
 
                     b.ToTable("ParkingSpaceVehicle");
+                });
+
+            modelBuilder.Entity("Garage3.Models.Booking", b =>
+                {
+                    b.HasOne("Garage3.Models.Member", "BookedBy")
+                        .WithMany()
+                        .HasForeignKey("BookedByMemberID");
+
+                    b.Navigation("BookedBy");
                 });
 
             modelBuilder.Entity("Garage3.Models.Member", b =>

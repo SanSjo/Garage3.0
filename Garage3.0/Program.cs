@@ -23,13 +23,15 @@ namespace Garage3
                 try
                 {
                     SeedData.GenerateTypes(services);
-                    SeedData.GenerateGeneralData(services);
+                    SeedData.GenerateMemberData(services);
+                    SeedData.GenerateVehicleData(services);
                 }
                 catch (Exception ex)
                 {
 
                    var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "an error occurred seeding the DB");
+                    Console.WriteLine(ex);
                 }
             }
                 host.Run();

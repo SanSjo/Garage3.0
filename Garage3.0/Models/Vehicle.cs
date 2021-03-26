@@ -29,7 +29,7 @@ namespace Garage3.Models
         public string LicenseNumber { get; set; }
 
         [Required]
-        [MaxLength(10, ErrorMessage = "10 characters max")]
+        [MaxLength(20, ErrorMessage = "20 characters max")]
         public string Color { get; set; }
 
         [MaxLength(20, ErrorMessage = "20 characters max")]

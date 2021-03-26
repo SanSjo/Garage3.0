@@ -70,6 +70,26 @@ namespace Garage3.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Booking",
+                columns: table => new
+                {
+                    BookingId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BookedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    BookedByMemberID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Booking", x => x.BookingId);
+                    table.ForeignKey(
+                        name: "FK_Booking_Member_BookedByMemberID",
+                        column: x => x.BookedByMemberID,
+                        principalTable: "Member",
+                        principalColumn: "MemberID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Vehicle",
                 columns: table => new
                 {
@@ -126,6 +146,11 @@ namespace Garage3.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Booking_BookedByMemberID",
+                table: "Booking",
+                column: "BookedByMemberID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Member_MembershipTypeType",
                 table: "Member",
                 column: "MembershipTypeType");
@@ -148,6 +173,9 @@ namespace Garage3.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Booking");
+
             migrationBuilder.DropTable(
                 name: "ParkingSpaceVehicle");
 
