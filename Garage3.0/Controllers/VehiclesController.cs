@@ -6,22 +6,39 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage3.Data;
+using Garage3.Models.ViewModels;
 
 namespace Garage3.Models
 {
     public class VehiclesController : Controller
     {
-        private readonly Garage3Context _context;
+        private readonly Garage3Context db;
 
         public VehiclesController(Garage3Context context)
         {
-            _context = context;
+            db = context;
         }
 
         // GET: Vehicles
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Vehicle.ToListAsync());
+            List<VehicleOverviewViewModel> list = new List<VehicleOverviewViewModel>();
+
+
+            foreach(Vehicle v in db.Vehicle.ToList())
+            {
+                list.Add(new VehicleOverviewViewModel()
+                {
+                    VehicleID = v.Id,
+                    Owner = @"{v.FirstName} {v.LastName}",
+                    MembershipType = v.Owner.MembershipType.Type,
+                    VehicleType = v.VehicleType.Type,
+                    LicenseNumber = v.LicenseNumber,
+                    TimeParked =  DateTime.Now-v.ArrivalTime
+                }) ;
+            }
+
+            return View(list);
         }
 
         // GET: Vehicles/Details/5
@@ -32,7 +49,7 @@ namespace Garage3.Models
                 return NotFound();
             }
 
-            var vehicle = await _context.Vehicle
+            var vehicle = await db.Vehicle
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (vehicle == null)
             {
@@ -57,8 +74,8 @@ namespace Garage3.Models
         {
             if (ModelState.IsValid)
             {
-                _context.Add(vehicle);
-                await _context.SaveChangesAsync();
+                db.Add(vehicle);
+                await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(vehicle);
@@ -72,7 +89,7 @@ namespace Garage3.Models
                 return NotFound();
             }
 
-            var vehicle = await _context.Vehicle.FindAsync(id);
+            var vehicle = await db.Vehicle.FindAsync(id);
             if (vehicle == null)
             {
                 return NotFound();
@@ -96,8 +113,8 @@ namespace Garage3.Models
             {
                 try
                 {
-                    _context.Update(vehicle);
-                    await _context.SaveChangesAsync();
+                    db.Update(vehicle);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -123,7 +140,7 @@ namespace Garage3.Models
                 return NotFound();
             }
 
-            var vehicle = await _context.Vehicle
+            var vehicle = await db.Vehicle
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (vehicle == null)
             {
@@ -138,15 +155,15 @@ namespace Garage3.Models
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var vehicle = await _context.Vehicle.FindAsync(id);
-            _context.Vehicle.Remove(vehicle);
-            await _context.SaveChangesAsync();
+            var vehicle = await db.Vehicle.FindAsync(id);
+            db.Vehicle.Remove(vehicle);
+            await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool VehicleExists(int id)
         {
-            return _context.Vehicle.Any(e => e.Id == id);
+            return db.Vehicle.Any(e => e.Id == id);
         }
     }
 }
