@@ -11,7 +11,7 @@ namespace Garage3.Services
 {
     namespace GarageMVC.Services
     {
-        public class VehicleTypeService : IVehicleTypeService
+        public class VehicleTypeService  //IVehicleTypeService
         {
             private readonly Garage3Context db;
 
@@ -20,14 +20,14 @@ namespace Garage3.Services
                 db = context;
             }
 
-            public async Task<IEnumerable<SelectListItem>> GetVehicleTypes()
-            {
-                return await db.VehicleType.OrderBy(v => v.VehicleType).Select(r => new SelectListItem
-                {
-                    Text = r.VehicleType.ToString(),
-                    Value = r.VehicleType.ToString()
-                }).ToListAsync();
-            }
+            //public async Task<IEnumerable<SelectListItem>> GetVehicleTypes()
+            //{
+            //    return await db.VehicleType.OrderBy(v => v.VehicleType).Select(r => new SelectListItem
+            //    {
+            //        Text = r.VehicleType.ToString(),
+            //        Value = r.VehicleType.ToString()
+            //    }).ToListAsync();
+            //}
         }
     }
 }
