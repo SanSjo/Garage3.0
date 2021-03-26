@@ -25,12 +25,12 @@ namespace Garage3.Models
             List<VehicleOverviewViewModel> list = new List<VehicleOverviewViewModel>();
 
 
-            foreach(Vehicle v in db.Vehicle.ToList())
+            foreach(Vehicle v in db.Vehicle.Include(v=>v.Owner).Include(v=>v.Owner.MembershipType).Include(v=>v.VehicleType).ToList())
             {
                 list.Add(new VehicleOverviewViewModel()
                 {
                     VehicleID = v.Id,
-                    Owner = @"{v.FirstName} {v.LastName}",
+                    Owner = $"{v.Owner.FirstName} {v.Owner.LastName}",
                     MembershipType = v.Owner.MembershipType.Type,
                     VehicleType = v.VehicleType.Type,
                     LicenseNumber = v.LicenseNumber,
