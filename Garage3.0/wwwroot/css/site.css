@@ -8,9 +8,10 @@ body {
 }
 
 .content {
-    margin-left: 250px;
+    margin-left:250px;
+    position: relative;           
     color: whitesmoke;
-    background-color: #131313
+    background-color: #131313;    
 }
 
 .modal-content {
@@ -104,8 +105,7 @@ img {
     width: 250px;
     height: 100vh;
     position: fixed;
-    top: 0;
-    left: -255px;
+    top: 0;    
     z-index: 999;
     background: rgb(16 15 15);
     color: #fff;
@@ -120,10 +120,10 @@ img {
 
 .footer {
     position: absolute;
-    bottom: 0;
-    width: 100%;
+    bottom: 0;    
+    width:100%;
     white-space: nowrap;
-    line-height: 60px; /* Vertically center the text there */
+    line-height: 60px; /* Vertically center the text there */     
 }
 
 .logo a {
@@ -182,13 +182,6 @@ img {
     top: 50%;
     right: 20px;
     transform: translateY(-50%);
-}
-
-/***** Content *****/
-
-.content {
-    width: 100%;
-    transition: all 0.3s;
 }
 
 .open-menu {
