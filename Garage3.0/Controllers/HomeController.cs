@@ -16,11 +16,11 @@ namespace Garage3.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-        }
+        }        
         public IActionResult Welcome()
         {
             return View();
-        }
+        }        
 
         public IActionResult Index()
         {

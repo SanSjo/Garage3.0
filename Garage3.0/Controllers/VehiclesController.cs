@@ -59,8 +59,8 @@ namespace Garage3.Models
             return View(vehicle);
         }
 
-        // GET: Vehicles/Create
-        public IActionResult Create()
+        // GET: Vehicles/RegisterNewVehicle
+        public IActionResult RegisterNewVehicle()
         {
             return View();
         }
@@ -70,8 +70,11 @@ namespace Garage3.Models
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ArrivalTime,LicenseNumber,Color,Brand,Model,NumberOfWheels,Size")] Vehicle vehicle)
+        public async Task<IActionResult> RegisterNewVehicle([Bind("Id,ArrivalTime,LicenseNumber,Color,Brand,Model,NumberOfWheels,Size")] Vehicle vehicle, Member owner)
         {
+            vehicle.ArrivalTime = DateTime.Now;
+            // TODO: How do we post the owner
+            vehicle.Owner = owner;
             if (ModelState.IsValid)
             {
                 db.Add(vehicle);
@@ -164,6 +167,105 @@ namespace Garage3.Models
         private bool VehicleExists(int id)
         {
             return db.Vehicle.Any(e => e.Id == id);
+        }
+
+        public IActionResult Parking()
+        {
+            return PartialView("Parking");
+        }
+        public IActionResult ParkingProcess(string licenseNumber)
+        {
+            if (CheckIfVehicleInDatabase(licenseNumber))
+            {
+                // this needs to be its own action and view
+                // all the ones that post needs to be that
+                return NewCarOrNewMember();
+            }
+            else
+            {
+                return View("Index");
+            }            
+            //    var answer = "";
+            //    if (answer == "NewCar")
+            //    {
+            //        var memberID = GetMemberID();
+            //        RegisterVehicleToMember(licenseNumber, memberID);
+            //        ParkVehicle(licenseNumber);
+            //    }
+            //    else if (answer == "NewMember")
+            //    {
+            //        int memberID = RegisterNewMember();
+            //        RegisterVehicleToMember(licenseNumber, memberID);
+            //        ParkVehicle(licenseNumber);
+            //    }
+            //}
+            //else
+            //{
+            //    ParkVehicle(licenseNumber);                
+            //}
+            //// Process Cancelled
+            //return View();
+        }
+
+        private int GetMemberID()
+        {
+            throw new NotImplementedException();
+        }
+
+        private IActionResult NewCarOrNewMember()
+        {
+            return PartialView("NewCarOrNewMember");
+            throw new NotImplementedException();
+        }
+
+        private int IdentifyMember()
+        {
+            throw new NotImplementedException();
+            int memberID;
+            return memberID;
+        }
+
+        private void ParkVehicle(string licenseNumber)
+        {
+            throw new NotImplementedException();
+        }
+
+        private int RegisterNewMember()
+        {
+            throw new NotImplementedException();
+            int memberID;
+            return memberID;
+        }
+
+        private bool askIfUserWantsToBecomeAMember()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void RegisterVehicleToMember(string licenseNumber, int memberID)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool askIfVehicleIsToBeRegisteredToMember()
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool askUserIfTheyAreAMember()
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool CheckIfVehicleInDatabase(string licenseNumber)
+        {
+            // BUG: null check doesnt work
+            var checkVehicle = db.Vehicle.Where(v => v.LicenseNumber == licenseNumber);
+            if (checkVehicle!=null)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
