@@ -171,40 +171,20 @@ namespace Garage3.Models
 
         public IActionResult Parking()
         {
-            return PartialView("Parking");
+            return View();
         }
         public IActionResult ParkingProcess(string licenseNumber)
         {
-            if (CheckIfVehicleInDatabase(licenseNumber))
+            if (VehicleInDatabase(licenseNumber))
             {
-                // this needs to be its own action and view
-                // all the ones that post needs to be that
-                return NewCarOrNewMember();
+                ParkVehicle(licenseNumber);
+                // TODO: Receipt
+                return View(nameof(Index));
             }
             else
             {
-                return View("Index");
-            }            
-            //    var answer = "";
-            //    if (answer == "NewCar")
-            //    {
-            //        var memberID = GetMemberID();
-            //        RegisterVehicleToMember(licenseNumber, memberID);
-            //        ParkVehicle(licenseNumber);
-            //    }
-            //    else if (answer == "NewMember")
-            //    {
-            //        int memberID = RegisterNewMember();
-            //        RegisterVehicleToMember(licenseNumber, memberID);
-            //        ParkVehicle(licenseNumber);
-            //    }
-            //}
-            //else
-            //{
-            //    ParkVehicle(licenseNumber);                
-            //}
-            //// Process Cancelled
-            //return View();
+                return NewCarOrNewMember();
+            } 
         }
 
         private int GetMemberID()
@@ -214,8 +194,7 @@ namespace Garage3.Models
 
         private IActionResult NewCarOrNewMember()
         {
-            return PartialView("NewCarOrNewMember");
-            throw new NotImplementedException();
+            return View(nameof(NewCarOrNewMember));            
         }
 
         private int IdentifyMember()
@@ -257,11 +236,11 @@ namespace Garage3.Models
             throw new NotImplementedException();
         }
 
-        private bool CheckIfVehicleInDatabase(string licenseNumber)
+        private bool VehicleInDatabase(string licenseNumber)
         {
             // BUG: null check doesnt work
             var checkVehicle = db.Vehicle.Where(v => v.LicenseNumber == licenseNumber);
-            if (checkVehicle!=null)
+            if (checkVehicle.Count()>1)
             {
                 return true;
             }

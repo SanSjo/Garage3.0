@@ -75,7 +75,7 @@ namespace Garage3.Controllers
         }
 
         // GET: Members/Create
-        public IActionResult CreateMember()
+        public IActionResult RegisterNewMember ()
         {
             return View();
         }
@@ -117,7 +117,7 @@ namespace Garage3.Controllers
         // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateMember([Bind("MemberID,PersonalIdentityNumber,FirstName,LastName,Joined,ExtendedMemberShipEndDate")] Member member)
+        public async Task<IActionResult> RegisterNewMember([Bind("MemberID,PersonalIdentityNumber,FirstName,LastName,Joined,ExtendedMemberShipEndDate")] Member member)
         {
             if (ModelState.IsValid)
             {
