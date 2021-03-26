@@ -1,19 +1,35 @@
 body {
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
-    font-weight: 300;    
+    font-weight: 300;
     line-height: 30px;
     text-align: center;
-    background-color:#131313    
+    background-color: #131313
 }
 
-.content{
-    margin-left:250px; 
+.content {
+    margin-left: 250px;
+    color: whitesmoke;
+    background-color: #131313
+}
+
+.modal-content {
+    color: whitesmoke;
+    background-color: #131313;
+}
+
+.modal-content h1{
+    color: whitesmoke;
+    background-color: #131313;
+}
+
+.modal-close
+{
     color:whitesmoke;
 }
 
-.table{
-    color:whitesmoke;
+.table {
+    color: whitesmoke;
 }
 
 strong {
@@ -102,7 +118,6 @@ img {
         left: 0;
     }
 
-
 .footer {
     position: absolute;
     bottom: 0;
@@ -111,9 +126,9 @@ img {
     line-height: 60px; /* Vertically center the text there */
 }
 
-.logo a{
+.logo a {
     text-decoration: none;
-    border:0;
+    border: 0;
 }
 
 .sidebar ul.menu-elements {
@@ -325,4 +340,23 @@ a.btn-customized-4 {
 
 footer {
     padding: 40px 0;
+}
+
+.modal {
+    text-align: center;
+    padding: 0 !important;
+}
+
+    .modal:before {
+        content: '';
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+        margin-right: -4px;
+    }
+
+.modal-dialog {
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
 }
