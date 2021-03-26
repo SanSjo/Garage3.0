@@ -5,7 +5,11 @@ body {
     color: #888;
     line-height: 30px;
     text-align: center;
-    background-color:#131313
+    background-color:#131313    
+}
+
+.content{
+    margin-left:250px;
 }
 
 strong {
