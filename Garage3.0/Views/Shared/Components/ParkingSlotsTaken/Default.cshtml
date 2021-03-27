@@ -1,0 +1,16 @@
+﻿@using Garage3.Views.Shared.Components
+@model ParkingSlotCount
+@{
+    if (Model.SlotsTaken == Model.SlotsTotal && Model.IsGarageFull == true)
+    {
+        @: Garage is full
+    }
+    else if (Model.SlotsTaken == Model.SlotsTotal && Model.IsGarageFull == false)
+    {
+        @: Garage is full except for shared motorcycle parking spots
+    }
+    else
+    {
+        @: @Model.SlotsTaken parking spaces out of @Model.SlotsTotal are occupied
+    }
+}
