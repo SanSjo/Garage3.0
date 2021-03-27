@@ -14,97 +14,76 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" href="~/css/site.css">
-    
 </head>
 
 <body>
-
-    <!-- Wrapper -->
-    <div class="wrapper">
-
-        <!-- Sidebar -->
-        <nav class="sidebar active">
-            <div class="col text-center logo">
-                <a asp-controller="Home" asp-action="Index"><img src="~/images/Logo.png" /></a>
-            </div>
-
-            <ul class="list-unstyled menu-elements">
-                <li>
-                    <a asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i> Overview</a>
-                </li>
-                <li>
-                    <a href="#vehicleSection" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" role="button" aria-controls="vehicleSection">
-                        <i class="fas fa-car"></i>Vehicles
-                    </a>
-                    <ul class="collapse list-unstyled" id="vehicleSection">
-                        <li>
-                            <a asp-controller="Vehicles" asp-action="Index">Vehicle Overview</a>
-                        </li>
-                        <li>
-                            <a asp-controller="Vehicles" asp-action="ParkVehicle">Park a vehicle</a>
-                        </li>
-                        <li>
-                            <a asp-controller="Vehicles" asp-action="RetrieveVehicle">Retrieve a vehicle</a>
-                        </li>
-                        <li>
-                            <a asp-controller="Vehicles" asp-action="RegisterVehicle">Register a new vehicle</a>
-                        </li>
-                        <li>
-                            <a asp-controller="Vehicles" asp-action="UnregisterVehicle">Unregister a vehicle</a>
-                        </li>
-                        <li>
-                            <a asp-controller="Vehicles" asp-action="EditVehicle">Edit a vehicle</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#memberSection" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" role="button" aria-controls="memberSection">
-                        <i class="fas fa-user-friends"></i>Members
-                    </a>
-                    <ul class="collapse list-unstyled" id="memberSection">
-                        <li>
-                            <a asp-controller="Members" asp-action="Index">Member Overview</a>
-                        </li>
-                        <li>
-                            <a asp-controller="Members" asp-action="RegisterMember">Register a member</a>
-                        </li>
-                        <li>
-                            <a asp-controller="Members" asp-action="UnregisterMember">Unregister a member</a>
-                        </li>
-                        <li>
-                            <a asp-controller="Members" asp-action="EditMember">Edit a member</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a asp-controller="Statistics" asp-action="Index"><i class="fas fa-percent"></i> Statistics</a>
-                </li>
-                <li>
-                    <a asp-controller="Administration" asp-action="Index"><i class="fas fa-cog"></i> Administration</a>
-                </li>
-            </ul>
-        </nav>
-        <!-- End sidebar -->
-        <!-- Content -->
-        <div class="content">
-
-            @RenderBody()
-
+    <!-- Sidebar -->
+    <nav class="sidebar active">
+        <div class="col text-center logo">
+            <a asp-controller="Home" asp-action="Index"><img src="~/images/Logo.png" /></a>
         </div>
-        <!-- End content -->
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col text-center">
-                        &copy; 2021 Lexicon NA21 Group 4.
-                    </div>
-                </div>
-            </div>
-        </footer>
 
+        <ul class="list-unstyled menu-elements">
+            <li>
+                <a asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i> Overview</a>
+            </li>
+            <li>
+                <a href="#vehicleSection" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" role="button" aria-controls="vehicleSection">
+                    <i class="fas fa-car"></i>Vehicles
+                </a>
+                <ul class="collapse list-unstyled" id="vehicleSection">
+                    <li>
+                        <a asp-controller="Vehicles" asp-action="Index">Vehicle Overview</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Vehicles" asp-action="ParkVehicle">Park a vehicle</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Vehicles" asp-action="RetrieveVehicle">Retrieve a vehicle</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Vehicles" asp-action="RegisterVehicle">Register a new vehicle</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Vehicles" asp-action="UnregisterVehicle">Unregister a vehicle</a>
+                    </li>                    
+                </ul>
+            </li>
+            <li>
+                <a href="#memberSection" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" role="button" aria-controls="memberSection">
+                    <i class="fas fa-user-friends"></i>Members
+                </a>
+                <ul class="collapse list-unstyled" id="memberSection">
+                    <li>
+                        <a asp-controller="Members" asp-action="Index">Member Overview</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Members" asp-action="RegisterMember">Register a new member</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Members" asp-action="UnregisterMember">Unregister a member</a>
+                    </li>                    
+                </ul>
+            </li>
+            <li>
+                <a asp-controller="Statistics" asp-action="Index"><i class="fas fa-percent"></i>Statistics</a>
+            </li>
+            <li>
+                <a asp-controller="Administration" asp-action="Index"><i class="fas fa-cog"></i>Administration</a>
+            </li>
+        </ul>
+    </nav>
+    <!-- End sidebar -->
+    <!-- Content -->
+    <div class="content">
+        @RenderBody()
     </div>
-    <!-- End wrapper -->
+    <!-- End content -->
+    <footer class="border-top footer text-muted dont-print">
+        <div class="container text-center">
+            &copy; 2021 Lexicon NA21 Group 4 - Garage 3 - <a class="link-primary" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
     <!-- Javascript -->
     @RenderSection("scripts", required: false)
 

@@ -2,5 +2,29 @@
     ViewData["Title"] = "Home Page";
 }
 
+<div class="row pb-5">
+    <div class="col">
+        <h1>Welcome to Garage 3.0</h1>
+    </div>
+</div>
 
-<a asp-controller="Vehicles" asp-action="Parking" class="btn btn-secondary">Park a vehicle</a>
+<div class="row">
+    <div class="col-5 text-center">
+        <div class="row">
+            <div class="col">
+                <a asp-controller="Vehicles" asp-action="Parking" class="btn btn-block btn-lg btn-secondary p-3 m-2">Park a vehicle</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a asp-controller="Vehicles" asp-action="RetrieveVehicle" class="btn btn-block btn-lg btn-secondary p-3 m-2">Retrieve Vehicle</a>
+            </div>
+        </div>        
+    </div>
+    <div class="col-5 border">
+        <div class="statistics">
+            @await Component.InvokeAsync("ParkingSlotsTaken")
+        </div>
+    </div>
+</div>
+
