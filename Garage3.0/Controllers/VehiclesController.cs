@@ -28,8 +28,7 @@ namespace Garage3.Models
             foreach(Vehicle v in db.Vehicle.Include(v=>v.Owner).Include(v=>v.Owner.MembershipType).Include(v=>v.VehicleType).ToList())
             {
                 list.Add(new VehicleOverviewViewModel()
-                {
-                    // BUG: doesnt work
+                {                    
                     VehicleID = v.Id,
                     Owner = $"{v.Owner.FirstName} {v.Owner.LastName}",
                     MembershipType = v.Owner.MembershipType.Type,

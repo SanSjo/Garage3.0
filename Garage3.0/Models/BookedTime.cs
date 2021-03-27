@@ -12,7 +12,11 @@ namespace Garage3.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int BookingId { get; set; }
-        public DateTime BookedTime { get; set; }        
+
+        [Display(Name = "Booked Time")]
+        public DateTime BookedTime { get; set; }
+
+        [Display(Name = "Booked by")]
         public Member BookedBy { get; set; }
     }
 }
