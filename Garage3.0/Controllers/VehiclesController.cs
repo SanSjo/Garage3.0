@@ -237,8 +237,7 @@ namespace Garage3.Models
         }
 
         private bool VehicleInDatabase(string licenseNumber)
-        {
-            // BUG: null check doesnt work
+        {            
             var checkVehicle = db.Vehicle.Where(v => v.LicenseNumber == licenseNumber);
             if (checkVehicle.Count()>1)
             {
