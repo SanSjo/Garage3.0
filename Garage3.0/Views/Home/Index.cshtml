@@ -8,8 +8,8 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-5 text-center">
+<div class="row align-content-center">
+    <div class="col text-center ml-4">
         <div class="row">
             <div class="col">
                 <a asp-controller="Vehicles" asp-action="Parking" class="btn btn-block btn-lg btn-secondary p-3 m-2">Park a vehicle</a>
@@ -21,7 +21,8 @@
             </div>
         </div>        
     </div>
-    <div class="col-5 border">
+    <div class="col-1"></div>
+    <div class="col border mr-4">
         <div class="statistics">
             @await Component.InvokeAsync("ParkingSlotsTaken")
         </div>
