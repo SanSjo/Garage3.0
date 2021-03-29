@@ -2,14 +2,10 @@
 @model ParkingSlotCount
 @{
     // TODO: Add more charts showing each vehicle type.
-    if (Model.SlotsTaken == Model.SlotsTotal && Model.IsGarageFull == true)
+    if (Model.SlotsTaken == Model.SlotsTotal == true)
     {
         @: Garage is full
-    }
-    else if (Model.SlotsTaken == Model.SlotsTotal && Model.IsGarageFull == false)
-    {
-        @: Garage is full except for shared motorcycle parking spots
-    }
+    }    
     else
     {
         @: @Model.SlotsTaken parking spaces out of @Model.SlotsTotal are occupied
@@ -32,7 +28,7 @@
     <div class="vehicleTypeCount">
         Type: @vehicleType.Type <br />
         Amount parked: @vehicleType.AmountParked<br />
-        Amount be to park: @vehicleType.AmountAbleToPark<br />
+        Amount able to park: @vehicleType.AmountAbleToPark<br />
     </div>
     }
 

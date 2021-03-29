@@ -16,6 +16,6 @@ namespace Garage3.Models
 
         public IList<Vehicle> Vehicle { get; set; }
 
-        public double Size { get; set; }
+        public float Size { get; set; }
     }
 }
