@@ -20,10 +20,12 @@ namespace Garage3.Models
         // TODO: Add check that first name isnt the same as last name
         [Display(Name = "First Name")]
         [MinLength(2, ErrorMessage = "Name must be at least 2 characters long.")]
+        [Remote(action: nameof(MembersController.SameName), controller: "Members", AdditionalFields = "LastName")]
         public string FirstName { get; set; }
 
         [Display(Name = "Last Name")]
         [MinLength(2, ErrorMessage = "Name must be at least 2 characters long.")]
+        [Remote(action: nameof(MembersController.SameName), controller: "Members", AdditionalFields = "FirstName")]
         public string LastName { get; set; }
 
         public MembershipType MembershipType { get; set; }
