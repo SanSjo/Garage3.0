@@ -2,7 +2,7 @@
 using System.Linq;
 
 using Garage3.Data;
-
+using Garage3.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +13,7 @@ namespace Garage3.Views.Shared.Components
         public string Type { get; set; }
         public int AmountParked { get; set; }
         public int AmountAbleToPark { get; set; }
+
     }
     public class ParkingSlotCount
     {
@@ -22,13 +23,15 @@ namespace Garage3.Views.Shared.Components
 
         public bool IsGarageFull { get; set; }
 
-        public List<VehicleTypeCount> VehicleTypeCounts { get; set; }
+        public List<VehicleTypeCount> VehicleTypeCount { get; set; }
+    
 
-        public ParkingSlotCount(int slotsTaken, int slotsTotal, bool isGarageFull)
+        public ParkingSlotCount(int slotsTaken, int slotsTotal, bool isGarageFull, List<VehicleTypeCount> vehicleTypeCount)
         {
             SlotsTaken = slotsTaken;
             SlotsTotal = slotsTotal;
             IsGarageFull = isGarageFull;
+            VehicleTypeCount = vehicleTypeCount;
         }
     }
 
@@ -48,8 +51,36 @@ namespace Garage3.Views.Shared.Components
             
             var slotsTotal = db.ParkingSpace.Count();
 
-            var pSlots = new ParkingSlotCount(slotsTaken, slotsTotal, IsGarageFull());
+            var vehicleTypeCount = getVehicleTypeCount();            
+
+            var pSlots = new ParkingSlotCount(slotsTaken, slotsTotal, IsGarageFull(), vehicleTypeCount);
             return View(pSlots);
+        }
+
+        
+        public List<VehicleTypeCount> getVehicleTypeCount()
+        {
+            var vehicleTypes = getVehicleTypes();
+            List<VehicleTypeCount> result;
+            foreach (var vehicleType in vehicleTypes)
+            {
+                var VTCO = new VehicleTypeCount();
+                VTCO.Type = vehicleType.Type;
+                var parkedCarsTemp = from v in db.Vehicle.Include(y => y.VehicleType).Include(x => x.ParkedAt)
+                                     where v.VehicleType.Type == vehicleType.Type && v.ParkedAt != null
+                                     select v.Id;
+
+                VTCO.AmountParked = parkedCarsTemp.Distinct().Count();
+               
+
+            }
+            return result;
+        }
+
+        private List<VehicleType> getVehicleTypes()
+        {
+            return db.VehicleType.ToList();
+
         }
 
         public bool IsGarageFull()
