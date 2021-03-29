@@ -161,6 +161,9 @@ namespace Garage3.Migrations
                     b.Property<float>("Size")
                         .HasColumnType("real");
 
+                    b.Property<string>("imgSrc")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Type");
 
                     b.ToTable("VehicleType");

@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Garage3.Data;
+using Garage3.Utilites;
 
 namespace Garage3
 {
@@ -33,6 +34,9 @@ namespace Garage3
                     options.UseSqlServer(Configuration.GetConnectionString("Garage3Context")));
             services.AddScoped<IRetrieveVehicleService, RetrieveVehicleService>();
             services.AddScoped<IVehicleTypeService, VehicleTypeService>();
+            
+                services.AddScoped<IParkingSpaceCalculations, ParkingSpaceCalculations>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

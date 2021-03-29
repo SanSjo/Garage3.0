@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Garage3.Migrations
 {
-    public partial class doubletofloat : Migration
+    public partial class addedimgsrctovehicletype : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -39,7 +39,8 @@ namespace Garage3.Migrations
                 columns: table => new
                 {
                     Type = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Size = table.Column<float>(type: "real", nullable: false)
+                    Size = table.Column<float>(type: "real", nullable: false),
+                    imgSrc = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

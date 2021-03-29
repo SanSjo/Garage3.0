@@ -4,33 +4,63 @@
     // TODO: Add more charts showing each vehicle type.
     if (Model.SlotsTaken == Model.SlotsTotal == true)
     {
+        <br />
         @: Garage is full
-    }    
+        <br />
+    }
     else
     {
+        <br />
         @: @Model.SlotsTaken parking spaces out of @Model.SlotsTotal are occupied
+<br />
     }
 }
 
 <html>
 <head>
-
-    @*https://www.chartjs.org/docs/master/getting-started/usage*@
-    <link rel="stylesheet" href="~/css/Chart.css">
+    <link rel="stylesheet" href="~/css/site.css">
 </head>
 
 <body>
     <!--Div that will hold the pie chart-->
+    <br />
     <div class="chart_div" id="chart_div"></div>
+    <br />
+    <div class="card-deck">
+        @foreach (var vehicleType in Model.VehicleTypeCount)
+        {
+            if (vehicleType.AmountAbleToPark < 1)
+            {
 
-    @foreach (var vehicleType in Model.VehicleTypeCount)
-    {
-    <div class="vehicleTypeCount">
-        Type: @vehicleType.Type <br />
-        Amount parked: @vehicleType.AmountParked<br />
-        Amount able to park: @vehicleType.AmountAbleToPark<br />
+                <div class="card w-75 text-white" style="width: 18rem;">
+                    <img class="card-img-top" src="@vehicleType.ImgSrc" alt="Card image cap">
+                    <div class="card-body">
+                        <div class="vehicleTypeCount">
+                            Type: @vehicleType.Type <br />
+                            Parked: @vehicleType.AmountParked<br />
+                            Available: @vehicleType.AmountAbleToPark
+                        </div>
+                    </div>
+                </div>
+
+            }
+            else
+            {
+
+                <div class="card w-75 bg-success text-white" style="width: 18rem;">
+                    <img class="card-img-top" src="@vehicleType.ImgSrc" alt="Card image cap">
+                    <div class="card-body">
+                        <div class="vehicleTypeCount">
+                            Type: @vehicleType.Type <br />
+                            Parked: @vehicleType.AmountParked<br />
+                            Available: @vehicleType.AmountAbleToPark
+                        </div>
+                    </div>
+                </div>
+
+            }
+        }
     </div>
-    }
 
     @*
         Scripts
@@ -53,7 +83,7 @@
             var data = google.visualization.arrayToDataTable([
                 ['Type', 'Unavailable Parking Spaces', 'Free Parking Spaces'],
                 ['Parking Space',@Model.SlotsTaken,@Model.SlotsTotal-@Model.SlotsTaken]
-            ]);           
+            ]);
             var options = {
                 backgroundColor: '#131313',
                 color: '#f5f5f5',
@@ -62,7 +92,7 @@
                 height: 100,
                 legend: { position: 'top', maxLines: 3, textStyle: { color: '#f5f5f5' } },
                 bar: { groupWidth: '100%' },
-                isStacked: true, 
+                isStacked: true,
                 vAxis: { textStyle: { color: '#f5f5f5' },},
                 hAxis: {
                     titleTextStyle: { color: '#f5f5f5' },

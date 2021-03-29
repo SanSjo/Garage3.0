@@ -7,5 +7,6 @@ namespace Garage3.Models
         [Key]
         public string Type { get; set; }
         public float Size { get; set; }
+        public string imgSrc { get; set; }
     }
 }
