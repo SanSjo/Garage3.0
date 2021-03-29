@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garage3.Migrations
 {
     [DbContext(typeof(Garage3Context))]
-    [Migration("20210326154240_2603c")]
-    partial class _2603c
+    [Migration("20210329112919_RevertCSDB")]
+    partial class RevertCSDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -103,7 +103,7 @@ Relational:TableColumnMappings: System.Collections.Generic.SortedSet`1[Microsoft
 <Link Source = "Member" Target="Member.Joined" Category="Contains" />
 <Link Source = "Member" Target="Member.LastName" Category="Contains" />
 <Link Source = "Member" Target="Member.MembershipTypeType" Category="Contains" />
-<Link Source = "Member" Target="Member.PersonalIdentityNumber" Category="Contains" />
+<Link Source = "Member" Target="Member.PIN" Category="Contains" />
 <Link Source = "IModel" Target="ParkingSpace" Category="Contains" />
 <Link Source = "MembershipType" Target="MembershipType.Type" Category="Contains" />
 <Link Source = "MembershipType" Target="MembershipType.Discount" Category="Contains" />
