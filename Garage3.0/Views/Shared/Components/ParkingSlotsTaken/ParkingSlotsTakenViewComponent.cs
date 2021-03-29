@@ -8,6 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Garage3.Views.Shared.Components
 {
+    public class VehicleTypeCount
+    {
+        public string Type { get; set; }
+        public int AmountParked { get; set; }
+        public int AmountAbleToPark { get; set; }
+    }
     public class ParkingSlotCount
     {
         public int SlotsTaken { get; set; }
@@ -15,6 +21,8 @@ namespace Garage3.Views.Shared.Components
         public int SlotsTotal { get; set; }
 
         public bool IsGarageFull { get; set; }
+
+        public List<VehicleTypeCount> VehicleTypeCounts { get; set; }
 
         public ParkingSlotCount(int slotsTaken, int slotsTotal, bool isGarageFull)
         {
