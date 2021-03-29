@@ -15,5 +15,7 @@ namespace Garage3.Models
         public string Name { get; set; }
 
         public IList<Vehicle> Vehicle { get; set; }
+
+        public double Size { get; set; }
     }
 }
