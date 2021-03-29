@@ -74,7 +74,7 @@ namespace Garage3.Controllers
         }
 
         // GET: Members/Create
-        public IActionResult RegisterNewMember ()
+        public IActionResult RegisterNewMember()
         {
             return View();
         }
@@ -82,11 +82,18 @@ namespace Garage3.Controllers
         [AcceptVerbs("GET", "POST")]
         public IActionResult IsAlreadyAMember(string PersonalIdentityNumber)
         {
+
+            if (PersonalIdentityNumber == "1")
+            {
+                return Json("näru");
+            }
+            //Character checker
             if (Regex.IsMatch(PersonalIdentityNumber, @"[^0-9-]"))
             {
                 return Json("Refrain from using anything other than numbers");
             }
 
+            //format input to 12 numbered PINumber
             string PINformat = Regex.Replace(PersonalIdentityNumber, @"[^0-9]", "");
 
             if (PINformat.Length > 12)
@@ -98,15 +105,22 @@ namespace Garage3.Controllers
                 return Json("To few numbers.");
             }
 
+            //Validate age based on input
             string PINDate = PINformat.Substring(0, 8);
-            DateTime customerAge = DateTime.ParseExact(PINDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
 
-            if (customerAge > DateTime.Now.AddYears(-18))
+            try
             {
-                return Json("Too Young");
+                DateTime customerAge = DateTime.ParseExact(PINDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+                if (customerAge > DateTime.Now.AddYears(-18))
+                {
+                    return Json("Too Young");
+                }
             }
-
-
+            catch (Exception)
+            {
+                return Json("Invalid date in this Personal Identity Number");
+            }
+            
             //return Json(PINformat);
             return Json(true);
 
