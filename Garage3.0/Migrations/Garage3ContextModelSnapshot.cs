@@ -4,16 +4,14 @@ using Garage3.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Garage3.Migrations
 {
     [DbContext(typeof(Garage3Context))]
-    [Migration("20210326153705_2603")]
-    partial class _2603
+    partial class Garage3ContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,6 +97,9 @@ namespace Garage3.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
+                    b.Property<double>("Size")
+                        .HasColumnType("float");
+
                     b.HasKey("ParkingSpaceID");
 
                     b.ToTable("ParkingSpace");
@@ -157,8 +158,8 @@ namespace Garage3.Migrations
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Size")
-                        .HasColumnType("int");
+                    b.Property<double>("Size")
+                        .HasColumnType("float");
 
                     b.HasKey("Type");
 

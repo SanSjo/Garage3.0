@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Garage3.Data;
@@ -61,17 +62,26 @@ namespace Garage3.Views.Shared.Components
         public List<VehicleTypeCount> getVehicleTypeCount()
         {
             var vehicleTypes = getVehicleTypes();
-            List<VehicleTypeCount> result;
+            List<VehicleTypeCount> result = null;
             foreach (var vehicleType in vehicleTypes)
             {
                 var VTCO = new VehicleTypeCount();
-                VTCO.Type = vehicleType.Type;
-                var parkedCarsTemp = from v in db.Vehicle.Include(y => y.VehicleType).Include(x => x.ParkedAt)
-                                     where v.VehicleType.Type == vehicleType.Type && v.ParkedAt != null
-                                     select v.Id;
 
-                VTCO.AmountParked = parkedCarsTemp.Distinct().Count();
-               
+                VTCO.Type = vehicleType.Type;
+
+                VTCO.AmountParked = (from v in db.Vehicle.Include(y => y.VehicleType).Include(x => x.ParkedAt)
+                                     where v.VehicleType.Type == vehicleType.Type && v.ParkedAt != null
+                                     select v.Id).Distinct().Count();
+                                
+                foreach (var parkingSpace in db.ParkingSpace.Include(v=>v.Vehicle))
+                {
+                    double totalVehicleSize=0;
+                    foreach(var vehicle in parkingSpace.Vehicle)
+                    {
+                        totalVehicleSize =+ vehicle.VehicleType.Size;
+                    }
+                    VTCO.AmountAbleToPark= (int)+Math.Floor((parkingSpace.Size - totalVehicleSize) / vehicleType.Size);
+                }
 
             }
             return result;
