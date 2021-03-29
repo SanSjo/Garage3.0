@@ -70,6 +70,8 @@ namespace Garage3.Controllers
                 return NotFound();
             }
 
+            ViewData["OwnedVehicles"] = await (from vehicle in db.Vehicle.Where(v => v.Owner == member) select vehicle).ToListAsync();
+
             return View(member);
         }
 
@@ -80,9 +82,20 @@ namespace Garage3.Controllers
         }
 
         [AcceptVerbs("GET", "POST")]
-        public IActionResult IsAlreadyAMember(string PersonalIdentityNumber)
+        public IActionResult SameName(string FirstName, string LastName)
         {
+            if ((!string.IsNullOrEmpty(FirstName) ||
+                !string.IsNullOrEmpty(LastName)) && string.Equals(FirstName,LastName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return Json("First and last names can't be the same");
+            }
 
+            return Json(true);
+        }
+
+        [AcceptVerbs("GET", "POST")]
+        public async Task<IActionResult> IsAlreadyAMember(string PersonalIdentityNumber)
+        {
             if (PersonalIdentityNumber == "1")
             {
                 return Json("näru");
@@ -120,7 +133,12 @@ namespace Garage3.Controllers
             {
                 return Json("Invalid date in this Personal Identity Number");
             }
-            
+
+            if (await db.Member.FirstOrDefaultAsync(m => m.PersonalIdentityNumber == PersonalIdentityNumber) != null)
+            {
+                return Json("Member already exists");
+            }
+
             //return Json(PINformat);
             return Json(true);
 
