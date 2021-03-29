@@ -24,8 +24,9 @@ namespace Garage3.Models
         public DateTime ArrivalTime { get; set; }
 
         [Required]
-        [Display(Name = "License Number")]
-        [Remote(action: "VehicleIsNotParked", controller: "Vehicles", ErrorMessage = "This Vehicle is Already Parked")]
+        [Display(Name = "License Number")]        
+        // TODO: Implement
+        //[Remote(action: "VehicleIsNotParked", controller: "Vehicles", ErrorMessage = "This Vehicle is Already Parked")]
         public string LicenseNumber { get; set; }
 
         [Required]

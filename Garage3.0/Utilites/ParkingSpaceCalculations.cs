@@ -75,7 +75,7 @@ namespace Garage3.Utilites
                         if (parkingspace.Vehicle.Count() == 0)
                         {
                             // count empty spots
-                            emptySpots++;
+                            emptySpots++;                            
                         }
                         if (parkingspace.Vehicle.Count() > 0 || iterations >= parkingspaces.Count())
                         {

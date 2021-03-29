@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+
 using Garage3.Data;
 using Garage3.Models.ViewModels;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Garage3.Models
 {
@@ -24,7 +25,8 @@ namespace Garage3.Models
         {
             var fullList = from vehicle in db.Vehicle
                            join member in db.Member on vehicle.Owner equals member
-                           select new { 
+                           select new
+                           {
                                VehicleID = vehicle.Id,
                                Owner = $"{member.FirstName} {member.LastName}",
                                MembershipType = member.MembershipType.Type,
@@ -75,14 +77,14 @@ namespace Garage3.Models
             return View();
         }
 
-        // POST: Vehicles/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Vehicles/Create To protect from overposting attacks, enable the specific properties
+        // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterNewVehicle([Bind("Id,ArrivalTime,LicenseNumber,Color,Brand,Model,NumberOfWheels,Size")] Vehicle vehicle, Member owner)
         {
             vehicle.ArrivalTime = DateTime.Now;
+
             // TODO: How do we post the owner
             vehicle.Owner = owner;
             if (ModelState.IsValid)
@@ -110,9 +112,8 @@ namespace Garage3.Models
             return View(vehicle);
         }
 
-        // POST: Vehicles/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Vehicles/Edit/5 To protect from overposting attacks, enable the specific properties
+        // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,ArrivalTime,LicenseNumber,Color,Brand,Model,NumberOfWheels,Size")] Vehicle vehicle)
@@ -183,18 +184,21 @@ namespace Garage3.Models
         {
             return View();
         }
-        public IActionResult ParkingProcess(string licenseNumber)
+
+        [HttpPost]
+        public async Task<IActionResult> ParkingProcess(string LicenseNumber)
         {
-            if (VehicleInDatabase(licenseNumber))
+            if (VehicleInDatabase(LicenseNumber))
             {
-                ParkVehicle(licenseNumber);
+                ParkVehicle(LicenseNumber);
+
                 // TODO: Receipt
-                return View(nameof(Index));
+                return RedirectToAction(nameof(Controllers.HomeController.Index));
             }
             else
             {
                 return NewCarOrNewMember();
-            } 
+            }
         }
 
         private int GetMemberID()
@@ -204,7 +208,7 @@ namespace Garage3.Models
 
         private IActionResult NewCarOrNewMember()
         {
-            return View(nameof(NewCarOrNewMember));            
+            return View(nameof(NewCarOrNewMember));
         }
 
         private int IdentifyMember()
@@ -216,44 +220,99 @@ namespace Garage3.Models
 
         private void ParkVehicle(string licenseNumber)
         {
-            throw new NotImplementedException();
-        }
+            var vehicle = db.Vehicle.Include(v => v.VehicleType).Include(v=>v.ParkedAt).Where(v => v.LicenseNumber == licenseNumber).FirstOrDefault();
+            var parkingSpaces = db.ParkingSpace.Include(v => v.Vehicle);
+            // Get vehicle size
+            var vehicleSize = vehicle.VehicleType.Size;
 
-        private int RegisterNewMember()
-        {
-            throw new NotImplementedException();
-            int memberID;
-            return memberID;
-        }
-
-        private bool askIfUserWantsToBecomeAMember()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void RegisterVehicleToMember(string licenseNumber, int memberID)
-        {
-            throw new NotImplementedException();
-        }
-
-        private bool askIfVehicleIsToBeRegisteredToMember()
-        {
-            throw new NotImplementedException();
-        }
-
-        private bool askUserIfTheyAreAMember()
-        {
-            throw new NotImplementedException();
-        }
-
-        private bool VehicleInDatabase(string licenseNumber)
-        {            
-            var checkVehicle = db.Vehicle.Where(v => v.LicenseNumber == licenseNumber);
-            if (checkVehicle.Count()>1)
+            if (vehicleSize < 1)
             {
-                return true;
+                // Check each parkingspace
+                foreach (var parkingSpace in parkingSpaces)
+                {
+                    // calculate space left
+                    float totalVehicleSize = 0;
+                    foreach (var vehicleInParkingSpace in parkingSpace.Vehicle)
+                    {
+                        totalVehicleSize += vehicleInParkingSpace.VehicleType.Size;
+                    }
+
+                    // if vehicle fits park
+                    if ((parkingSpace.Size - totalVehicleSize) > vehicleSize)
+                    {
+                        vehicle.ParkedAt.Add(parkingSpace);
+                        parkingSpace.Vehicle.Add(vehicle);
+                        break;
+                    }
+                }
             }
-            return false;
+            if (vehicleSize>1)
+            {                
+                List<ParkingSpace> emptySpaces = new List<ParkingSpace>();                             
+                foreach (var parkingspace in parkingSpaces)
+                {                    
+                    // find empty space
+                    if (parkingspace.Vehicle.Count() == 0)
+                    {                        
+                        emptySpaces.Add(parkingspace);
+                        // if empty spaces >= vehicle size park vehicle
+                        if (emptySpaces.Count>=vehicleSize)
+                        {
+                            foreach (var emptySpace in emptySpaces)
+                            {
+                                vehicle.ParkedAt.Add(emptySpace);
+                                emptySpace.Vehicle.Add(vehicle);
+
+                            }
+                            break;
+                        }
+                    }                    
+                    else
+                    {
+                        // reset emptySpots
+                        emptySpaces.Clear();
+                    }
+                }                
+            }
+            vehicle.ArrivalTime = DateTime.Now;            
+            db.SaveChanges();
+        }
+
+            private int RegisterNewMember()
+            {
+                throw new NotImplementedException();
+                int memberID;
+                return memberID;
+            }
+
+            private bool askIfUserWantsToBecomeAMember()
+            {
+                throw new NotImplementedException();
+            }
+
+            private void RegisterVehicleToMember(string licenseNumber, int memberID)
+            {
+                throw new NotImplementedException();
+            }
+
+            private bool askIfVehicleIsToBeRegisteredToMember()
+            {
+                throw new NotImplementedException();
+            }
+
+            private bool askUserIfTheyAreAMember()
+            {
+                throw new NotImplementedException();
+            }
+
+            private bool VehicleInDatabase(string licenseNumber)
+            {
+                var checkVehicle = db.Vehicle.Where(v => v.LicenseNumber == licenseNumber);
+                if (checkVehicle.Count() > 0)
+                {
+                    return true;
+                }
+                return false;
+            }
         }
     }
-}
