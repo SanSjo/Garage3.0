@@ -32,7 +32,7 @@ namespace Garage3.Models
 
                 context.VehicleType.AddRange(
                     new VehicleType { Type = "Car", Size = 1 },
-                    new VehicleType { Type = "Motorcycle", Size = 1 },
+                    new VehicleType { Type = "Motorcycle", Size = 1/3 },
                     new VehicleType { Type = "Pickup", Size = 2 },
                     new VehicleType { Type = "Truck", Size = 3 }
                   );
@@ -47,7 +47,7 @@ namespace Garage3.Models
                 for (int i = 1; i < 10; i++)
                 {
                     context.ParkingSpace.AddRange(
-                    new ParkingSpace { Number = i, Name = "Ruta" + i });
+                    new ParkingSpace { Number = i, Name = "Ruta" + i, Size=1 });
                 }
 
             savechanges:
