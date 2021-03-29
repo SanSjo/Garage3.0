@@ -6,7 +6,6 @@ namespace Garage3.Models
     {
         [Key]
         public string Type { get; set; }
-        public int Size { get; set; }
-
+        public double Size { get; set; }
     }
 }
