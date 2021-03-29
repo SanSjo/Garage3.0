@@ -22,23 +22,33 @@ namespace Garage3.Models
         // GET: Vehicles
         public async Task<IActionResult> Index()
         {
-            List<VehicleOverviewViewModel> list = new List<VehicleOverviewViewModel>();
+            var fullList = from vehicle in db.Vehicle
+                           join member in db.Member on vehicle.Owner equals member
+                           select new { 
+                               VehicleID = vehicle.Id,
+                               Owner = $"{member.FirstName} {member.LastName}",
+                               MembershipType = member.MembershipType.Type,
+                               VehicleType = vehicle.VehicleType.Type,
+                               LicenseNumber = vehicle.LicenseNumber,
+                               TimeParked = DateTime.Now - vehicle.ArrivalTime
+                           };
 
+            List<VehicleOverviewViewModel> output = new List<VehicleOverviewViewModel>();
 
-            foreach(Vehicle v in db.Vehicle.Include(v=>v.Owner).Include(v=>v.Owner.MembershipType).Include(v=>v.VehicleType).ToList())
+            foreach (var v in fullList)
             {
-                list.Add(new VehicleOverviewViewModel()
-                {                    
-                    VehicleID = v.Id,
-                    Owner = $"{v.Owner.FirstName} {v.Owner.LastName}",
-                    MembershipType = v.Owner.MembershipType.Type,
-                    VehicleType = v.VehicleType.Type,
+                output.Add(new VehicleOverviewViewModel()
+                {
+                    VehicleID = v.VehicleID,
+                    Owner = v.Owner,
+                    MembershipType = v.MembershipType,
+                    VehicleType = v.VehicleType,
                     LicenseNumber = v.LicenseNumber,
-                    TimeParked =  DateTime.Now-v.ArrivalTime
-                }) ;
+                    TimeParked = v.TimeParked
+                });
             }
 
-            return View(list);
+            return View(output);
         }
 
         // GET: Vehicles/Details/5
