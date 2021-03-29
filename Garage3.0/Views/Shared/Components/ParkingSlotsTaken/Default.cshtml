@@ -27,6 +27,15 @@
     <!--Div that will hold the pie chart-->
     <div class="chart_div" id="chart_div"></div>
 
+    @foreach (var vehicleType in Model.VehicleTypeCount)
+    {
+    <div class="vehicleTypeCount">
+        Type: @vehicleType.Type <br />
+        Amount parked: @vehicleType.AmountParked<br />
+        Amount be to park: @vehicleType.AmountAbleToPark<br />
+    </div>
+    }
+
     @*
         Scripts
         Load the AJAX API

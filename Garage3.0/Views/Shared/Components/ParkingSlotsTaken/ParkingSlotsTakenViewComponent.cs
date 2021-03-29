@@ -62,27 +62,27 @@ namespace Garage3.Views.Shared.Components
         public List<VehicleTypeCount> getVehicleTypeCount()
         {
             var vehicleTypes = getVehicleTypes();
-            List<VehicleTypeCount> result = null;
+            List<VehicleTypeCount> result = new List<VehicleTypeCount>();
             foreach (var vehicleType in vehicleTypes)
             {
                 var VTCO = new VehicleTypeCount();
 
                 VTCO.Type = vehicleType.Type;
-
-                VTCO.AmountParked = (from v in db.Vehicle.Include(y => y.VehicleType).Include(x => x.ParkedAt)
-                                     where v.VehicleType.Type == vehicleType.Type && v.ParkedAt != null
-                                     select v.Id).Distinct().Count();
                                 
+                VTCO.AmountParked = (from v in db.Vehicle.Include(y => y.VehicleType).Include(x => x.ParkedAt)
+                                     where v.VehicleType.Type == vehicleType.Type && v.ParkedAt.Count() > 0
+                                     select v.Id).Distinct().Count();
+
                 foreach (var parkingSpace in db.ParkingSpace.Include(v=>v.Vehicle))
                 {
                     double totalVehicleSize=0;
                     foreach(var vehicle in parkingSpace.Vehicle)
                     {
-                        totalVehicleSize =+ vehicle.VehicleType.Size;
+                        totalVehicleSize += vehicle.VehicleType.Size;
                     }
-                    VTCO.AmountAbleToPark= (int)+Math.Floor((parkingSpace.Size - totalVehicleSize) / vehicleType.Size);
+                    VTCO.AmountAbleToPark += (int)+Math.Floor((parkingSpace.Size - totalVehicleSize) / vehicleType.Size);
                 }
-
+                result.Add(VTCO);
             }
             return result;
         }

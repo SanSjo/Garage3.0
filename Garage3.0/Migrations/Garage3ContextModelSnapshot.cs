@@ -97,6 +97,9 @@ namespace Garage3.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
+                    b.Property<double>("Size")
+                        .HasColumnType("float");
+
                     b.HasKey("ParkingSpaceID");
 
                     b.ToTable("ParkingSpace");
@@ -155,8 +158,8 @@ namespace Garage3.Migrations
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Size")
-                        .HasColumnType("int");
+                    b.Property<double>("Size")
+                        .HasColumnType("float");
 
                     b.HasKey("Type");
 
