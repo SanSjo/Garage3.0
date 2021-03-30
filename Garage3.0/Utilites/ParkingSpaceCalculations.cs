@@ -51,14 +51,15 @@ namespace Garage3.Utilites
                 // if smaller or equal to 1 we dont need to worry about consequtive spaces
                 if (vehicleType.Size <= 1)
                 {
-                    foreach (var parkingSpace in db.ParkingSpace.Include(v => v.Vehicle))
+                    var parkingSpaces = db.ParkingSpace.Include(v => v.Vehicle);
+                    foreach (var parkingSpace in parkingSpaces)
                     {
                         float totalVehicleSize = 0;
                         foreach (var vehicle in parkingSpace.Vehicle)
                         {
                             totalVehicleSize += vehicle.VehicleType.Size;
                         }
-                        VTCO.AmountAbleToPark += (int)+Math.Floor((parkingSpace.Size - totalVehicleSize) / vehicleType.Size);
+                        VTCO.AmountAbleToPark += (int)+Math.Floor((parkingSpace.Size - Math.Min(1,totalVehicleSize)) / vehicleType.Size);
                     }
                 }
                 if (vehicleType.Size > 1)
