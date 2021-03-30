@@ -11,12 +11,14 @@ namespace Garage3.Migrations
                 name: "MembershipType",
                 columns: table => new
                 {
-                    Type = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MembershiptTypeID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Discount = table.Column<decimal>(type: "decimal(18,4)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MembershipType", x => x.Type);
+                    table.PrimaryKey("PK_MembershipType", x => x.MembershiptTypeID);
                 });
 
             migrationBuilder.CreateTable(
@@ -56,7 +58,7 @@ namespace Garage3.Migrations
                     PersonalIdentityNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MembershipTypeType = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    MembershipTypeMembershiptTypeID = table.Column<int>(type: "int", nullable: true),
                     Joined = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExtendedMemberShipEndDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -64,10 +66,10 @@ namespace Garage3.Migrations
                 {
                     table.PrimaryKey("PK_Member", x => x.MemberID);
                     table.ForeignKey(
-                        name: "FK_Member_MembershipType_MembershipTypeType",
-                        column: x => x.MembershipTypeType,
+                        name: "FK_Member_MembershipType_MembershipTypeMembershiptTypeID",
+                        column: x => x.MembershipTypeMembershiptTypeID,
                         principalTable: "MembershipType",
-                        principalColumn: "Type",
+                        principalColumn: "MembershiptTypeID",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -153,9 +155,9 @@ namespace Garage3.Migrations
                 column: "BookedByMemberID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Member_MembershipTypeType",
+                name: "IX_Member_MembershipTypeMembershiptTypeID",
                 table: "Member",
-                column: "MembershipTypeType");
+                column: "MembershipTypeMembershiptTypeID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ParkingSpaceVehicle_VehicleId",

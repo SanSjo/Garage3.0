@@ -10,10 +10,9 @@ namespace Garage3.Models
     public class MembershipType
     {
         [Key]
+        public int MembershiptTypeID { get; set; }        
         public string Type { get; set; }
-
-        // TODO: What is a good value to have here?
-        [Column(TypeName = "decimal(18,4)")]
+        // TODO: What is a good value to have here?               
         public decimal Discount { get; set; }
     }
 }

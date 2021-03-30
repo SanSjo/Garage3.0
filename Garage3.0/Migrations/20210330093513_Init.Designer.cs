@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garage3.Migrations
 {
     [DbContext(typeof(Garage3Context))]
-    [Migration("20210330075454_vtype")]
-    partial class vtype
+    [Migration("20210330093513_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -60,28 +60,33 @@ namespace Garage3.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MembershipTypeType")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("MembershipTypeMembershiptTypeID")
+                        .HasColumnType("int");
 
                     b.Property<string>("PersonalIdentityNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MemberID");
 
-                    b.HasIndex("MembershipTypeType");
+                    b.HasIndex("MembershipTypeMembershiptTypeID");
 
                     b.ToTable("Member");
                 });
 
             modelBuilder.Entity("Garage3.Models.MembershipType", b =>
                 {
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("MembershiptTypeID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal>("Discount")
                         .HasColumnType("decimal(18,4)");
 
-                    b.HasKey("Type");
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MembershiptTypeID");
 
                     b.ToTable("MembershipType");
                 });
@@ -199,7 +204,7 @@ namespace Garage3.Migrations
                 {
                     b.HasOne("Garage3.Models.MembershipType", "MembershipType")
                         .WithMany()
-                        .HasForeignKey("MembershipTypeType");
+                        .HasForeignKey("MembershipTypeMembershiptTypeID");
 
                     b.Navigation("MembershipType");
                 });

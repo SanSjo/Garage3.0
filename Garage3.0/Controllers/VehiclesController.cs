@@ -99,6 +99,9 @@ namespace Garage3.Models
             return View(vehicle);
         }
 
+
+        // BUG: Cant enter decimals as discount
+        // BUG: Deleteing membershiptype while member exists with that type causes crash
         // POST: Vehicles/Edit/5 To protect from overposting attacks, enable the specific properties
         // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
