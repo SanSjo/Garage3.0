@@ -27,7 +27,7 @@ namespace Garage3.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Number = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Size = table.Column<double>(type: "float", nullable: false)
+                    Size = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -39,7 +39,8 @@ namespace Garage3.Migrations
                 columns: table => new
                 {
                     Type = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Size = table.Column<double>(type: "float", nullable: false)
+                    Size = table.Column<float>(type: "real", nullable: false),
+                    imgSrc = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

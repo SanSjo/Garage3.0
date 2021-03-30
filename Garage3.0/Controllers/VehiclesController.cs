@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+
 using Garage3.Data;
 using Garage3.Models.ViewModels;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Garage3.Models
 {
@@ -20,33 +21,21 @@ namespace Garage3.Models
         }
 
         // GET: Vehicles
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search)
         {
-            var fullList = from vehicle in db.Vehicle
-                           join member in db.Member on vehicle.Owner equals member
-                           select new { 
-                               VehicleID = vehicle.Id,
-                               Owner = $"{member.FirstName} {member.LastName}",
-                               MembershipType = member.MembershipType.Type,
-                               VehicleType = vehicle.VehicleType.Type,
-                               LicenseNumber = vehicle.LicenseNumber,
-                               TimeParked = DateTime.Now - vehicle.ArrivalTime
-                           };
-
-            List<VehicleOverviewViewModel> output = new List<VehicleOverviewViewModel>();
-
-            foreach (var v in fullList)
-            {
-                output.Add(new VehicleOverviewViewModel()
+            List<VehicleOverviewViewModel> output = await db.Vehicle
+                .Join(db.Member, vehicle => vehicle.Owner, member => member, 
+                (vehicle, member) => new VehicleOverviewViewModel
                 {
-                    VehicleID = v.VehicleID,
-                    Owner = v.Owner,
-                    MembershipType = v.MembershipType,
-                    VehicleType = v.VehicleType,
-                    LicenseNumber = v.LicenseNumber,
-                    TimeParked = v.TimeParked
-                });
-            }
+                    VehicleID = vehicle.Id,
+                    Owner = $"{member.FirstName} {member.LastName}",
+                    MembershipType = member.MembershipType.Type,
+                    VehicleType = vehicle.VehicleType.Type,
+                    LicenseNumber = vehicle.LicenseNumber,
+                    TimeParked = DateTime.Now - vehicle.ArrivalTime
+                })
+                .Where(v => String.IsNullOrEmpty(search) || (v.VehicleType.Contains(search) || v.LicenseNumber.Contains(search)))
+                .ToListAsync();
 
             return View(output);
         }
@@ -75,14 +64,14 @@ namespace Garage3.Models
             return View();
         }
 
-        // POST: Vehicles/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Vehicles/Create To protect from overposting attacks, enable the specific properties
+        // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterNewVehicle([Bind("Id,ArrivalTime,LicenseNumber,Color,Brand,Model,NumberOfWheels,Size")] Vehicle vehicle, Member owner)
         {
             vehicle.ArrivalTime = DateTime.Now;
+
             // TODO: How do we post the owner
             vehicle.Owner = owner;
             if (ModelState.IsValid)
@@ -110,23 +99,30 @@ namespace Garage3.Models
             return View(vehicle);
         }
 
-        // POST: Vehicles/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Vehicles/Edit/5 To protect from overposting attacks, enable the specific properties
+        // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ArrivalTime,LicenseNumber,Color,Brand,Model,NumberOfWheels,Size")] Vehicle vehicle)
+        public async Task<IActionResult> Edit(int id, Vehicle vehicle)
         {
             if (id != vehicle.Id)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {
-                    db.Update(vehicle);
+                    var currentVehicle = db.Vehicle.FirstOrDefault(v => v.Id == vehicle.Id);
+                    if (currentVehicle == null)
+                        return NotFound();
+            
+                    currentVehicle.LicenseNumber = vehicle.LicenseNumber;
+                    currentVehicle.Color = vehicle.Color;
+                    currentVehicle.Brand = vehicle.Brand;
+                    currentVehicle.Model = vehicle.Model;
+                    currentVehicle.NumberOfWheels = vehicle.NumberOfWheels;
+
                     await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -140,9 +136,13 @@ namespace Garage3.Models
                         throw;
                     }
                 }
+
+      
                 return RedirectToAction(nameof(Index));
             }
-            return View(vehicle);
+
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Vehicles/Delete/5
@@ -183,18 +183,20 @@ namespace Garage3.Models
         {
             return View();
         }
-        public IActionResult ParkingProcess(string licenseNumber)
+
+        [HttpPost]
+        public IActionResult ParkingProcess(string LicenseNumber)
         {
-            if (VehicleInDatabase(licenseNumber))
+            if (VehicleInDatabase(LicenseNumber))
             {
-                ParkVehicle(licenseNumber);
+                var returnedView = ParkVehicle(LicenseNumber);
                 // TODO: Receipt
-                return View(nameof(Index));
+                return RedirectToAction(returnedView);
             }
             else
             {
                 return NewCarOrNewMember();
-            } 
+            }
         }
 
         private int GetMemberID()
@@ -204,7 +206,7 @@ namespace Garage3.Models
 
         private IActionResult NewCarOrNewMember()
         {
-            return View(nameof(NewCarOrNewMember));            
+            return View(nameof(NewCarOrNewMember));
         }
 
         private int IdentifyMember()
@@ -214,46 +216,113 @@ namespace Garage3.Models
             return memberID;
         }
 
-        private void ParkVehicle(string licenseNumber)
+        public IActionResult VehicleAlreadyParked()
         {
-            throw new NotImplementedException();
+            return View(nameof(VehicleAlreadyParked));
         }
 
-        private int RegisterNewMember()
+        
+        private string ParkVehicle(string licenseNumber)
         {
-            throw new NotImplementedException();
-            int memberID;
-            return memberID;
-        }
-
-        private bool askIfUserWantsToBecomeAMember()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void RegisterVehicleToMember(string licenseNumber, int memberID)
-        {
-            throw new NotImplementedException();
-        }
-
-        private bool askIfVehicleIsToBeRegisteredToMember()
-        {
-            throw new NotImplementedException();
-        }
-
-        private bool askUserIfTheyAreAMember()
-        {
-            throw new NotImplementedException();
-        }
-
-        private bool VehicleInDatabase(string licenseNumber)
-        {            
-            var checkVehicle = db.Vehicle.Where(v => v.LicenseNumber == licenseNumber);
-            if (checkVehicle.Count()>1)
+            var vehicle = db.Vehicle.Include(v => v.VehicleType).Include(v => v.ParkedAt).Where(v => v.LicenseNumber == licenseNumber).FirstOrDefault();
+            // if vehicle is already parked inform user
+            if (vehicle.ParkedAt.Count()>0)
             {
-                return true;
+                return "VehicleAlreadyParked";
+            }            
+            var parkingSpaces = db.ParkingSpace.Include(v => v.Vehicle);
+            // Get vehicle size
+            var vehicleSize = vehicle.VehicleType.Size;
+
+            if (vehicleSize < 1)
+            {
+                // Check each parkingspace
+                foreach (var parkingSpace in parkingSpaces)
+                {
+                    // calculate space left
+                    float totalVehicleSize = 0;
+                    foreach (var vehicleInParkingSpace in parkingSpace.Vehicle)
+                    {
+                        totalVehicleSize += vehicleInParkingSpace.VehicleType.Size;
+                    }
+
+                    // if vehicle fits park
+                    if ((parkingSpace.Size - totalVehicleSize) > vehicleSize)
+                    {
+                        vehicle.ParkedAt.Add(parkingSpace);
+                        parkingSpace.Vehicle.Add(vehicle);
+                        break;
+                    }
+                }
             }
-            return false;
+            if (vehicleSize>1)
+            {                
+                List<ParkingSpace> emptySpaces = new List<ParkingSpace>();                             
+                foreach (var parkingspace in parkingSpaces)
+                {                    
+                    // find empty space
+                    if (parkingspace.Vehicle.Count() == 0)
+                    {                        
+                        emptySpaces.Add(parkingspace);
+                        // if empty spaces >= vehicle size park vehicle
+                        if (emptySpaces.Count>=vehicleSize)
+                        {
+                            foreach (var emptySpace in emptySpaces)
+                            {
+                                vehicle.ParkedAt.Add(emptySpace);
+                                emptySpace.Vehicle.Add(vehicle);
+
+                            }
+                            break;
+                        }
+                    }                    
+                    else
+                    {
+                        // reset emptySpots
+                        emptySpaces.Clear();
+                    }
+                }                
+            }
+            vehicle.ArrivalTime = DateTime.Now;
+            db.SaveChanges();
+            return "\"Index\",\"Home\"";
+        }
+
+            private int RegisterNewMember()
+            {
+                throw new NotImplementedException();
+                int memberID;
+                return memberID;
+            }
+
+            private bool askIfUserWantsToBecomeAMember()
+            {
+                throw new NotImplementedException();
+            }
+
+            private void RegisterVehicleToMember(string licenseNumber, int memberID)
+            {
+                throw new NotImplementedException();
+            }
+
+            private bool askIfVehicleIsToBeRegisteredToMember()
+            {
+                throw new NotImplementedException();
+            }
+
+            private bool askUserIfTheyAreAMember()
+            {
+                throw new NotImplementedException();
+            }
+
+            private bool VehicleInDatabase(string licenseNumber)
+            {
+                var checkVehicle = db.Vehicle.Where(v => v.LicenseNumber == licenseNumber);
+                if (checkVehicle.Count() > 0)
+                {
+                    return true;
+                }
+                return false;
+            }
         }
     }
-}

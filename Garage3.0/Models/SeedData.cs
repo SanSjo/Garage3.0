@@ -31,10 +31,10 @@ namespace Garage3.Models
                 }
 
                 context.VehicleType.AddRange(
-                    new VehicleType { Type = "Car", Size = 1 },
-                    new VehicleType { Type = "Motorcycle", Size = 1/3 },
-                    new VehicleType { Type = "Pickup", Size = 2 },
-                    new VehicleType { Type = "Truck", Size = 3 }
+                    new VehicleType { Type = "Car", Size = 1 ,imgSrc= "/images/VehicleTypeIcons/car icon.png" },
+                    new VehicleType { Type = "Motorcycle", Size = 0.33F, imgSrc = "/images/VehicleTypeIcons/motorcycle icon.png" },
+                    new VehicleType { Type = "Pickup", Size = 2, imgSrc = "/images/VehicleTypeIcons/pickup icon.png" },
+                    new VehicleType { Type = "Truck", Size = 3, imgSrc = "/images/VehicleTypeIcons/truck icon.png" }
                   );
 
             parkingSpaceGen:

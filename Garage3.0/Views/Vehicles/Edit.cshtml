@@ -13,11 +13,7 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="ArrivalTime" class="control-label"></label>
-                <input asp-for="ArrivalTime" class="form-control" />
-                <span asp-validation-for="ArrivalTime" class="text-danger"></span>
-            </div>
+
             <div class="form-group">
                 <label asp-for="LicenseNumber" class="control-label"></label>
                 <input asp-for="LicenseNumber" class="form-control" />
@@ -46,6 +42,33 @@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
+
+             @*Button trigger modal 
+            <button id="submit-button" type="submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                Save
+            </button>
+            <a asp-action="Index" class="btn btn-primary ml-2">Back to parking lot</a>
+
+             Modal 
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Save Confirmation</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Do you want to save your changes?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                            <button asp-action="Edit" id="submit-button" type="submit" class="btn btn-danger">Confirm Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
         </form>
     </div>
 </div>
