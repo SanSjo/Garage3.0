@@ -195,14 +195,14 @@ namespace Garage3.Models
 
 
 
-        public ActionResult RetrieveVehicle()
+        public ActionResult RetrieveParkedVehicle()
         {
             return View();
         }
 
 
         // POST: Vehicles/Delete/5
-        [HttpPost, ActionName("RetrieveVehicle")]
+        [HttpPost, ActionName("UnregisterVehicle")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string SelectedVehicle)
         {
@@ -353,7 +353,7 @@ namespace Garage3.Models
             return View(nameof(NoSpaceForVehicle));
         }
 
-        [HttpPost, ActionName("RetrieveVehicle")]
+        [HttpPost, ActionName("RetrieveParkedVehicle")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RetrieveConfirmed(string selectedVehicle)
         {
