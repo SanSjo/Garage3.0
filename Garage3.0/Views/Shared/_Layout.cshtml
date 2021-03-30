@@ -75,6 +75,35 @@
     </nav>
     <!-- End sidebar -->
     <!-- Content -->
+    <div class="container">
+        <main role="main" class="pb-3">
+            @* Displays receipt *@
+            @if (TempData["Member"] != null)
+            {
+                <div id="successfailuremodal" class="modal fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Receipt</h5>
+                                <button type="button" class="close dont-print" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <strong>Member:</strong> @TempData["Member"]<br />
+                                <strong>Vehicle:</strong> @TempData["Vehicle"]<br />
+                                <strong>Time parked:</strong>  @TempData["Time Parked"]<br />
+                                <strong>Amount Saved:</strong> @TempData["Savings"]<br />
+                                <strong>Total cost:</strong>  @TempData["Cost"]<br />
+                                <div class="row">
+                                    <a class="btn btn-primary dont-print ml-1" asp-area="" asp-controller="Home" asp-action="Index">Close</a>
+                                    <button class="btn btn-primary dont-print ml-3" asp-area="" asp-controller="Home" asp-action="Index" id="btnPrint">Print</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </main>
+    </div>
     <div class="content">
         @RenderBody()
     </div>

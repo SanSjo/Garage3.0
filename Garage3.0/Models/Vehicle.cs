@@ -21,7 +21,7 @@ namespace Garage3.Models
 
         [Display(Name = "Arrival time")]
         [DataType(DataType.DateTime)]
-        public DateTime ArrivalTime { get; set; }
+        public DateTime? ArrivalTime { get; set; }
 
         [Required]
         [Display(Name = "License Number")]        

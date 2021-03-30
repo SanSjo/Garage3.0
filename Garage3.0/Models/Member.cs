@@ -32,6 +32,8 @@ namespace Garage3.Models
 
         public DateTime Joined { get; set; }
 
+        [Display(Name = "Membership End Date")]
+        [DataType(DataType.DateTime)]
         public DateTime? ExtendedMemberShipEndDate { get; set; }
     }
 }

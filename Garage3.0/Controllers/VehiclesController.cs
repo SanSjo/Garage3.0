@@ -32,9 +32,10 @@ namespace Garage3.Models
                     MembershipType = member.MembershipType.Type,
                     VehicleType = vehicle.VehicleType.Type,
                     LicenseNumber = vehicle.LicenseNumber,
-                    TimeParked = DateTime.Now - vehicle.ArrivalTime
+                    TimeParked = vehicle.ArrivalTime != null ? DateTime.Now - vehicle.ArrivalTime : null
                 })
-                .Where(v => String.IsNullOrEmpty(search) || (v.VehicleType.Contains(search) || v.LicenseNumber.Contains(search)))
+                .Where(v => String.IsNullOrEmpty(search) || (v.VehicleType.Contains(search) || v.LicenseNumber.Contains(search))
+                && v.TimeParked != null)
                 .ToListAsync();
 
             return View(output);
@@ -265,7 +266,47 @@ namespace Garage3.Models
             db.SaveChanges();
         }
 
-            private int RegisterNewMember()
+        [HttpPost, ActionName("RetrieveVehicle")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RetrieveConfirmed(string selectedVehicle)
+        {
+            if (String.IsNullOrEmpty(selectedVehicle))
+            {
+                return View();
+            }
+
+            var vehicle = await db.Vehicle.Where(v => v.LicenseNumber == selectedVehicle).FirstAsync();
+            var member = await db.Member.Where(m => m == vehicle.Owner).FirstAsync();
+            var parkingSpots = await db.ParkingSpace.Where(p => vehicle.ParkedAt.Contains(p)).FirstAsync();
+
+            foreach (var parkingSpot in vehicle.ParkedAt)
+            {
+                parkingSpot.Vehicle.Clear();
+            }
+
+            ReceiptOverviewModel receipt = new ReceiptOverviewModel()
+            {
+                Member = $"{member.FirstName} {member.LastName}",
+                Vehicle = vehicle.LicenseNumber,
+                TimeParked = (DateTime.Now - vehicle.ArrivalTime).ToString(),
+                Cost = 0,
+                Savings = 0
+            };
+
+            TempData["Member"] = receipt.Member;
+            TempData["Vehicle"] = receipt.Vehicle;
+            TempData["Time Parked"] = receipt.TimeParked;
+            TempData["Cost"] = receipt.Cost;
+            TempData["Savings"] = receipt.Savings;
+
+            vehicle.ArrivalTime = null;
+
+            await db.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        private int RegisterNewMember()
             {
                 throw new NotImplementedException();
                 int memberID;
