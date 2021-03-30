@@ -12,14 +12,14 @@
     <h4>Vehicle</h4>
     <hr />
 
-    <div>
+    <div class="container w-25">
         <form asp-controller="Vehicles" asp-action="RetrieveVehicle" id="RetrieveVehicle">
 
 
             <label>Select a Licence number</label>
 
-            <div class="form-group">
-                <select asp-for="SelectedVehicle" asp-items="@await service.GetParkedVehicles()" class="form-control box-adjustment">
+            <div class="form-group ">
+                <select asp-for="SelectedVehicle" asp-items="@await service.GetParkedVehicles()" class="form-control box-adjustment ">
                     <option selected="selected" value="">Please select</option>
                 </select>
             </div>
@@ -37,11 +37,7 @@
 
         </select>*@
 
-    @*<form asp-action="UnregisterVehicle">
-            <input type="hidden" asp-for="SelectedVehicle" />
-            <input type="submit" value="UnregisterVehicle" class="btn btn-danger" /> |
-            <a asp-action="Index">Back to List</a>
-        </form>*@
+
 </div>
 
 
