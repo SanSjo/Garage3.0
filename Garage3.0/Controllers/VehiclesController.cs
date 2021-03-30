@@ -371,13 +371,13 @@ namespace Garage3.Models
                 return View();
             }
 
-            var vehicle = await db.Vehicle.Include(p=>p.ParkedAt).Where(v => v.LicenseNumber == SelectedVehicle).FirstAsync();            
-            
+            var vehicle = await db.Vehicle.Include(p=>p.ParkedAt).Where(v => v.LicenseNumber == SelectedVehicle).FirstAsync();
+
             vehicle.ParkedAt.Clear();            
 
             decimal cost = 50*(decimal)(DateTime.Now - (DateTime)vehicle.ArrivalTime).TotalHours, savings = 0;
 
-            decimal discountValue = (DateTime.Compare((DateTime)member.ExtendedMemberShipEndDate, DateTime.Now) < 0 &&
+            decimal discountValue = (DateTime.Compare((DateTime)vehicle.ExtendedMemberShipEndDate, DateTime.Now) < 0 &&
                 DateTime.Compare((DateTime)member.ExtendedMemberShipEndDate, (DateTime)vehicle.ArrivalTime) > 0) ?
                 ((DateTime)member.ExtendedMemberShipEndDate - (DateTime)vehicle.ArrivalTime).Hours * 50 : cost;
             savings = (member.MembershipType.Discount / 100) * discountValue;
