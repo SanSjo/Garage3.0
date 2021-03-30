@@ -172,20 +172,6 @@ namespace Garage3.Models
             return View();
         }
 
-        [HttpPost]
-        public IActionResult ParkingProcess(string LicenseNumber)
-        {
-            if (VehicleInDatabase(LicenseNumber))
-            {
-                var returnedView = ParkVehicle(LicenseNumber);
-                // TODO: Receipt
-                return RedirectToAction(returnedView);
-            }
-            else
-            {
-                return NewCarOrNewMember();
-            }
-        }
 
         private int GetMemberID()
         {
@@ -204,12 +190,23 @@ namespace Garage3.Models
             return memberID;
         }
 
-        public IActionResult VehicleAlreadyParked()
-        {
-            return View(nameof(VehicleAlreadyParked));
-        }
+       
 
         
+        [HttpPost]
+        public IActionResult ParkingProcess(string LicenseNumber)
+        {
+            if (VehicleInDatabase(LicenseNumber))
+            {
+                var returnedView = ParkVehicle(LicenseNumber);
+                // TODO: Receipt
+                return RedirectToAction(returnedView);
+            }
+            else
+            {
+                return NewCarOrNewMember();
+            }
+        }
         private string ParkVehicle(string licenseNumber)
         {
             var vehicle = db.Vehicle.Include(v => v.VehicleType).Include(v => v.ParkedAt).Where(v => v.LicenseNumber == licenseNumber).FirstOrDefault();
@@ -217,7 +214,13 @@ namespace Garage3.Models
             if (vehicle.ParkedAt.Count()>0)
             {
                 return "VehicleAlreadyParked";
-            }            
+            }
+            // if no space for vehicle
+            var spaceCheck = new Garage3.Utilites.ParkingSpaceCalculations(db);            
+            if (spaceCheck.vehicleTypeStatistics().Where(v => v.Type == vehicle.VehicleType.Type).Select(v => v.AmountAbleToPark).First()<=0)
+            {                
+                return "NoSpaceForVehicle";
+            }
             var parkingSpaces = db.ParkingSpace.Include(v => v.Vehicle);
             // Get vehicle size
             var vehicleSize = vehicle.VehicleType.Size;
@@ -273,10 +276,19 @@ namespace Garage3.Models
             }
             vehicle.ArrivalTime = DateTime.Now;
             db.SaveChanges();
-            return "\"Index\",\"Home\"";
+            return nameof(Garage3.Controllers.HomeController.Index);
+        }
+        public IActionResult VehicleAlreadyParked()
+        {
+            return View(nameof(VehicleAlreadyParked));
         }
 
-            private int RegisterNewMember()
+        public IActionResult NoSpaceForVehicle()
+        {
+            return View(nameof(NoSpaceForVehicle));
+        }
+
+        private int RegisterNewMember()
             {
                 throw new NotImplementedException();
                 int memberID;
