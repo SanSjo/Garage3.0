@@ -12,7 +12,7 @@ namespace Garage3.Models
         [Key]
         public int MembershiptTypeID { get; set; }        
         public string Type { get; set; }
-        // TODO: What is a good value to have here?               
+        // TODO: What is a good value to have here?                               
         public decimal Discount { get; set; }
     }
 }
