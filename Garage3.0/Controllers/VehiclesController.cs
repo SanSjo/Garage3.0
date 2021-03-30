@@ -183,12 +183,6 @@ namespace Garage3.Models
             return db.Vehicle.Any(e => e.Id == id);
         }
 
-        public IActionResult Parking()
-        {
-            return View();
-        }
-
-
         private int GetMemberID()
         {
             throw new NotImplementedException();
@@ -205,11 +199,11 @@ namespace Garage3.Models
             int memberID;
             return memberID;
         }
+        public IActionResult Parking()
+        {
+            return View();
+        }
 
-       
-
-        
-        [HttpPost]
         public IActionResult ParkingProcess(string LicenseNumber)
         {
             if (VehicleInDatabase(LicenseNumber))
@@ -262,7 +256,7 @@ namespace Garage3.Models
                     }
                 }
             }
-            if (vehicleSize>1)
+            if (vehicleSize>=1)
             {                
                 List<ParkingSpace> emptySpaces = new List<ParkingSpace>();                             
                 foreach (var parkingspace in parkingSpaces)

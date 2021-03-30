@@ -14,7 +14,7 @@ namespace Garage3.Migrations
                     MembershiptTypeID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Discount = table.Column<decimal>(type: "decimal(18,4)", nullable: false)
+                    Discount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {

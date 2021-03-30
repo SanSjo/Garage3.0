@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garage3.Migrations
 {
     [DbContext(typeof(Garage3Context))]
-    [Migration("20210330093513_Init")]
+    [Migration("20210330100144_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -81,7 +81,7 @@ namespace Garage3.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
