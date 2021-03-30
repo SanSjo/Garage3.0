@@ -22,7 +22,7 @@ namespace Garage3.Services
 
             public async Task<IEnumerable<SelectListItem>> GetParkedVehicles()
             {
-                return await db.Vehicle.OrderBy(v => v.LicenseNumber).Select(r => new SelectListItem
+                return await db.Vehicle.OrderBy(v => v.LicenseNumber).Where(p=>p.ParkedAt.Count()>0).Select(r => new SelectListItem
                 {
                     Text = r.LicenseNumber.ToString(),
                     Value = r.LicenseNumber.ToString()
