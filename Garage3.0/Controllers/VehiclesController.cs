@@ -24,19 +24,16 @@ namespace Garage3.Models
         // GET: Vehicles
         public async Task<IActionResult> Index(string search)
         {
-            List<VehicleOverviewViewModel> output = await db.Vehicle
-                .Join(db.Member, vehicle => vehicle.Owner, member => member, 
-                (vehicle, member) => new VehicleOverviewViewModel
+            List<VehicleOverviewViewModel> output = await db.Vehicle.Include(v=>v.Owner).Include(v=>v.VehicleType).Include(v=>v.Owner.MembershipType).Select(vehicle=>new VehicleOverviewViewModel                
                 {
                     VehicleID = vehicle.Id,
-                    Owner = $"{member.FirstName} {member.LastName}",
-                    MembershipType = member.MembershipType.Type,
+                    Owner = $"{vehicle.Owner.FirstName} {vehicle.Owner.LastName}",
+                    MembershipType = vehicle.Owner.MembershipType.Type,
                     VehicleType = vehicle.VehicleType.Type,
                     LicenseNumber = vehicle.LicenseNumber,
                     TimeParked = vehicle.ArrivalTime != null ? DateTime.Now - vehicle.ArrivalTime : null
                 })
-                .Where(v => String.IsNullOrEmpty(search) || (v.VehicleType.Contains(search) || v.LicenseNumber.Contains(search))
-                && v.TimeParked != null)
+                .Where(v => String.IsNullOrEmpty(search) || (v.VehicleType.Contains(search) || v.LicenseNumber.Contains(search)))
                 .ToListAsync();
 
             return View(output);
@@ -353,17 +350,28 @@ namespace Garage3.Models
                 return View();
             }
 
-            var vehicle = await db.Vehicle.Include(p=>p.ParkedAt).Where(v => v.LicenseNumber == SelectedVehicle).FirstAsync();            
-            
+            var vehicle = await db.Vehicle.Include(p=>p.ParkedAt).Include(m=>m.Owner)
+                .Include(mt=>mt.Owner.MembershipType)
+                .Where(v => v.LicenseNumber == SelectedVehicle).FirstAsync();
+
             vehicle.ParkedAt.Clear();            
+
+            decimal cost = 50*(decimal)(DateTime.Now - (DateTime)vehicle.ArrivalTime).TotalHours, savings = 0;
+
+            decimal discountValue = (DateTime.Compare((DateTime)vehicle.Owner.ExtendedMemberShipEndDate, DateTime.Now) < 0 &&
+                DateTime.Compare((DateTime)vehicle.Owner.ExtendedMemberShipEndDate, (DateTime)vehicle.ArrivalTime) > 0) ?
+                ((DateTime)vehicle.Owner.ExtendedMemberShipEndDate - (DateTime)vehicle.ArrivalTime).Hours * 50 : cost;
+            savings = (vehicle.Owner.MembershipType.Discount / 100) * discountValue;
+
+            cost -= savings;
 
             ReceiptOverviewModel receipt = new ReceiptOverviewModel()
             {
                // Member = $"{member.FirstName} {member.LastName}",
                 Vehicle = vehicle.LicenseNumber,
                 TimeParked = (DateTime.Now - vehicle.ArrivalTime).ToString(),
-                Cost = 0,
-                Savings = 0
+                Cost = cost,
+                Savings = savings
             };
 
             //TempData["Member"] = receipt.Member;
