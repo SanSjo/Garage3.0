@@ -20,8 +20,12 @@ body {
     padding:20px;
 }
 
-.table{
-    color:whitesmoke;
+.fa-check-circle {
+    color: green;
+}
+
+.fa-times-circle {
+    color: red;
 }
 
 /***** Modal styling *****/
