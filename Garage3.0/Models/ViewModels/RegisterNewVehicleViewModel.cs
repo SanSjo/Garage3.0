@@ -11,6 +11,8 @@ namespace Garage3.Models.ViewModels
 
         public string LicenseNumber { get; set; }
 
+        public string VehicleType { get; set; }
+
         public string Color { get; set; }
 
         public string Brand { get; set; }

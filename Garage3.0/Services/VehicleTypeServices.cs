@@ -20,10 +20,10 @@ namespace Garage3.Services
 
             public async Task<IEnumerable<SelectListItem>> GetVehicleTypes()
             {
-                return await db.Vehicle.OrderBy(v => v.VehicleType).Select(r => new SelectListItem
+                return await db.VehicleType.OrderBy(v => v.Type).Select(r => new SelectListItem
                 {
-                    Text = r.VehicleType.ToString(),
-                    Value = r.VehicleType.ToString()
+                    Text = r.Type.ToString(),
+                    Value = r.Type.ToString()
                 }).ToListAsync();
             }
         }    

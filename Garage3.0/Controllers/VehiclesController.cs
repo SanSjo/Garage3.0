@@ -62,8 +62,7 @@ namespace Garage3.Models
 
         // GET: Vehicles/RegisterNewVehicle
         public IActionResult RegisterNewVehicle()
-        {
-            ViewData["ownerselect"] = OwnerSelect();
+        {            
             return View();
         }
 
@@ -71,17 +70,18 @@ namespace Garage3.Models
         // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RegisterNewVehicle([Bind("Id,ArrivalTime,LicenseNumber,Color,Brand,Model,NumberOfWheels,Size")] RegisterNewVehicleViewModel vh)
+        public async Task<IActionResult> RegisterNewVehicle([Bind("MemberID,LicenseNumber,VehicleType,Color,Brand,Model,NumberOfWheels")] RegisterNewVehicleViewModel vh)
         {
-            var vehicle = new Vehicle();
-            vehicle.ArrivalTime = DateTime.Now;
+            var vehicle = new Vehicle();            
             vehicle.LicenseNumber  =  vh.LicenseNumber;
             vehicle.Brand = vh.Brand;
             vehicle.Color  =  vh.Color;
             vehicle.Model = vh.Model;
             vehicle.NumberOfWheels  =  vh.NumberOfWheels;
-            var owner = db.Member.Where(m => m.MemberID == Int32.Parse(vh.MemberID)).FirstOrDefault(); 
+            var owner = db.Member.Where(m => m.MemberID == Int32.Parse(vh.MemberID)).FirstOrDefault();
+            var vehicleType = db.VehicleType.Where(v => v.Type == vh.VehicleType).FirstOrDefault();
             vehicle.Owner  =  owner;
+            vehicle.VehicleType = vehicleType;
             
             
 
@@ -93,23 +93,7 @@ namespace Garage3.Models
             }
             return View(vehicle);
         }
-        private List<SelectListItem> OwnerSelect()
-        {
-            var output = new List<SelectListItem>();
-            var memberlist = db.Member.Where(v => v.MemberID != null);
-
-            foreach (var item in memberlist)
-            {
-                output.Add(new SelectListItem
-                {
-                    Text = item.FirstName +" "+ item.LastName,
-                    Value = item.MemberID.ToString()
-                   
-                });
-            }
-            
-            return output;
-        }
+        
         // GET: Vehicles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -175,7 +159,7 @@ namespace Garage3.Models
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Vehicles/Delete/5
+        //GET: Vehicles/Delete/5
         public async Task<IActionResult> UnregisterVehicle(int? id)
         {
             if (id == null)
@@ -193,16 +177,69 @@ namespace Garage3.Models
             return View(vehicle);
         }
 
+        //public async Task<IActionResult> RetrieveVehicle(string selectVehicle)
+        //{
+        //    IQueryable<string> genreQuery = from m in db.Vehicle
+        //                                    orderby m.LicenseNumber
+        //                                    select m.LicenseNumber;
+
+        //    var vehicle = from v in db.Vehicle
+        //                 select v;
+
+        //    if (!String.IsNullOrEmpty(selectVehicle))
+        //    {
+        //        vehicle = vehicle.Where(g => g.LicenseNumber == selectVehicle);
+        //    }
+
+        //    var selectVehicleVM = new RetrieveVehicleViewModel
+        //    {
+        //        Vehicles = new SelectList(await genreQuery.Distinct().ToListAsync()),
+
+
+        //    };
+
+
+        //    return View(selectVehicleVM);
+        //}
+
+
+
+        public ActionResult RetrieveParkedVehicle()
+        {
+            return View();
+        }
+
+
         // POST: Vehicles/Delete/5
         [HttpPost, ActionName("UnregisterVehicle")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string SelectedVehicle)
         {
-            var vehicle = await db.Vehicle.FindAsync(id);
-            db.Vehicle.Remove(vehicle);
 
+            if (SelectedVehicle == null)
+            {
+                return View();
+            }
+
+            // Check which vehicle to remove
+            var vehicleToRemove = await db.Vehicle.Where(v => v.LicenseNumber == SelectedVehicle).FirstAsync();
+
+            // Check where vehicle is parked
+            var parkingSpotToFreeUp = await db.ParkingSpace.Where(v => v.Vehicle == vehicleToRemove).ToListAsync();
+            foreach (var parkingSpot in parkingSpotToFreeUp)
+            {
+                parkingSpot.Vehicle = null;
+            }
+
+            // Remove vehicle from database
+            db.Vehicle.Remove(vehicleToRemove);
+
+            // Save changes to database
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+        
+
+            return RedirectToAction("Index", "Home");
+
         }
 
         private bool VehicleExists(int id)
@@ -325,7 +362,7 @@ namespace Garage3.Models
             return View(nameof(NoSpaceForVehicle));
         }
 
-        [HttpPost, ActionName("RetrieveVehicle")]
+        [HttpPost, ActionName("RetrieveParkedVehicle")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RetrieveConfirmed(string selectedVehicle)
         {

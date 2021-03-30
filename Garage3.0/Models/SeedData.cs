@@ -65,11 +65,11 @@ namespace Garage3.Models
                     var pro = context.MembershipType.FirstOrDefault(x => x.Type == "Pro");
 
                     context.Member.AddRange(
-                            new Member { PersonalIdentityNumber = "198002309876", FirstName = "Conny", LastName = "Andersson", Joined = DateTime.Parse("2020-03-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-02-01"), MembershipType = standard },
-                            new Member { PersonalIdentityNumber = "198102309876", FirstName = "Berta", LastName = "Svennson", Joined = DateTime.Parse("2021-01-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-05-06"), MembershipType = pro },
-                            new Member { PersonalIdentityNumber = "198202309876", FirstName = "David", LastName = "Nokto", Joined = DateTime.Parse("2018-11-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-03-12"), MembershipType = standard },
-                            new Member { PersonalIdentityNumber = "198302309876", FirstName = "Anita", LastName = "Berg", Joined = DateTime.Parse("2019-06-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-03-24"), MembershipType = standard },
-                            new Member { PersonalIdentityNumber = "193002309876", FirstName = "Stefan", LastName = "Karlsson", Joined = DateTime.Parse("2021-03-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-04-01"), MembershipType = pro }
+                            new Member { PersonalIdentityNumber = "198002149876", FirstName = "Conny", LastName = "Andersson", Joined = DateTime.Parse("2020-03-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-02-01"), MembershipType = standard },
+                            new Member { PersonalIdentityNumber = "198102149876", FirstName = "Berta", LastName = "Svennson", Joined = DateTime.Parse("2021-01-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-05-06"), MembershipType = pro },
+                            new Member { PersonalIdentityNumber = "198202149876", FirstName = "David", LastName = "Nokto", Joined = DateTime.Parse("2018-11-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-03-12"), MembershipType = standard },
+                            new Member { PersonalIdentityNumber = "198302149876", FirstName = "Anita", LastName = "Berg", Joined = DateTime.Parse("2019-06-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-03-24"), MembershipType = standard },
+                            new Member { PersonalIdentityNumber = "193002149876", FirstName = "Stefan", LastName = "Karlsson", Joined = DateTime.Parse("2021-03-01"), ExtendedMemberShipEndDate = DateTime.Parse("2021-04-01"), MembershipType = pro }
                         );
                     context.SaveChanges();
                 }
@@ -94,11 +94,11 @@ namespace Garage3.Models
                     var owner5 = context.Member.Where(m => m.MemberID == 5).FirstOrDefault();
 
                     context.Vehicle.AddRange(
-                        new Vehicle { Owner = owner1, ArrivalTime = DateTime.Parse("2021-03-02"), Brand = "Volvo", NumberOfWheels = 4, LicenseNumber = "ABC123", Color = "Black", Model = "E4", VehicleType = car },
-                        new Vehicle { Owner = owner2, ArrivalTime = DateTime.Parse("2021-03-02"), Brand = "Yamaha", NumberOfWheels = 2, LicenseNumber = "VBA234", Color = "Brown", Model = "E5", VehicleType = motorcycle },
-                        new Vehicle { Owner = owner3, ArrivalTime = DateTime.Parse("2021-03-02"), Brand = "Toyota", NumberOfWheels = 4, LicenseNumber = "DHI137", Color = "Orangie", Model = "E0", VehicleType = pickup },
-                        new Vehicle { Owner = owner4, ArrivalTime = DateTime.Parse("2021-03-02"), Brand = "Mercedes", NumberOfWheels = 6, LicenseNumber = "BCA354", Color = "DowerBlue", Model = "E9", VehicleType = truck },
-                        new Vehicle { Owner = owner5, ArrivalTime = DateTime.Parse("2021-03-02"), Brand = "Harley", NumberOfWheels = 2, LicenseNumber = "DCI298", Color = "MaybeYw", Model = "EU", VehicleType = motorcycle }
+                        new Vehicle { Owner = owner1, Brand = "Volvo", NumberOfWheels = 4, LicenseNumber = "ABC123", Color = "Black", Model = "E4", VehicleType = car },
+                        new Vehicle { Owner = owner2, Brand = "Yamaha", NumberOfWheels = 2, LicenseNumber = "VBA234", Color = "Brown", Model = "E5", VehicleType = motorcycle },
+                        new Vehicle { Owner = owner3, Brand = "Toyota", NumberOfWheels = 4, LicenseNumber = "DHI137", Color = "Orangie", Model = "E0", VehicleType = pickup },
+                        new Vehicle { Owner = owner4, Brand = "Mercedes", NumberOfWheels = 6, LicenseNumber = "BCA354", Color = "DowerBlue", Model = "E9", VehicleType = truck },
+                        new Vehicle { Owner = owner5, Brand = "Harley", NumberOfWheels = 2, LicenseNumber = "DCI298", Color = "MaybeYw", Model = "EU", VehicleType = motorcycle }
                         );
 
                     context.SaveChanges();

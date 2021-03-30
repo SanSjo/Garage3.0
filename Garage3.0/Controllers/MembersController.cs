@@ -162,7 +162,7 @@ namespace Garage3.Controllers
                 {
                     member.ExtendedMemberShipEndDate = DateTime.Now.AddDays(30);
                 }
-
+                member.MembershipType = db.MembershipType.Where(m => m.Type == "Pro").FirstOrDefault();
                 db.Add(member);
                 await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
