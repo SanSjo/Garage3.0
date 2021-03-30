@@ -7,6 +7,7 @@ using Garage3.Data;
 using Garage3.Models.ViewModels;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Garage3.Models
@@ -146,33 +147,84 @@ namespace Garage3.Models
         }
 
         // GET: Vehicles/Delete/5
-        public async Task<IActionResult> UnregisterVehicle(int? id)
+        //public async Task<IActionResult> UnregisterVehicle(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var vehicle = await db.Vehicle
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (vehicle == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(vehicle);
+        //}
+
+        //public async Task<IActionResult> UnregisterVehicle(string selectVehicle)
+        //{
+        //    IQueryable<string> genreQuery = from m in db.Vehicle
+        //                                    orderby m.LicenseNumber
+        //                                    select m.LicenseNumber;
+
+        //    var vehicle = from v in db.Vehicle
+        //                 select v;
+
+        //    if (!String.IsNullOrEmpty(selectVehicle))
+        //    {
+        //        vehicle = vehicle.Where(g => g.LicenseNumber == selectVehicle);
+        //    }
+
+        //    var selectVehicleVM = new RetrieveVehicleViewModel
+        //    {
+        //        Vehicles = new SelectList(await genreQuery.Distinct().ToListAsync()),
+              
+
+        //    };
+
+
+        //    return View(selectVehicleVM);
+        //}
+
+        public ActionResult UnregisterVehicle()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var vehicle = await db.Vehicle
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (vehicle == null)
-            {
-                return NotFound();
-            }
-
-            return View(vehicle);
+            return View();
         }
+
 
         // POST: Vehicles/Delete/5
         [HttpPost, ActionName("UnregisterVehicle")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string SelectedVehicle)
         {
-            var vehicle = await db.Vehicle.FindAsync(id);
-            db.Vehicle.Remove(vehicle);
 
+            if (SelectedVehicle == null)
+            {
+                return View();
+            }
+
+            // Check which vehicle to remove
+            var vehicleToRemove = await db.Vehicle.Where(v => v.LicenseNumber == SelectedVehicle).FirstAsync();
+
+            // Check where vehicle is parked
+            var parkingSpotToFreeUp = await db.ParkingSpace.Where(v => v.Vehicle == vehicleToRemove).ToListAsync();
+            foreach (var parkingSpot in parkingSpotToFreeUp)
+            {
+                parkingSpot.Vehicle = null;
+            }
+
+            // Remove vehicle from database
+            db.Vehicle.Remove(vehicleToRemove);
+
+            // Save changes to database
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+        
+
+            return RedirectToAction("Index", "Home");
+
         }
 
         private bool VehicleExists(int id)
