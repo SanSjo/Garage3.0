@@ -1,4 +1,6 @@
-﻿@model Garage3.Models.Vehicle
+﻿@model Garage3.Models.ViewModels.RegisterNewVehicleViewModel
+@inject Garage3.Services.IOwnerSelectService service
+
 
 @{
     ViewData["Title"] = "RegisterNewVehicle";
@@ -13,9 +15,12 @@
         <form asp-action="RegisterNewVehicle">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Owner" class="control-label"></label>
-                <select asp-for="Owner" asp-items="@ViewData["ownerselect"] as List<SelectListItem>" class="form-control" ></select>
-                <span asp-validation-for="Owner" class="text-danger"></span>
+                <label asp-for="MemberID" class="control-label"></label>
+                <select asp-for="MemberID" asp-items="@await service.OwnerSelect()" class="form-control box-adjustment">
+                    @*<option selected="selected" value="">-Please Select-</option>*@
+                </select>
+                <select asp-for="MemberID" asp-items="@await service.OwnerSelect()" class="form-control"></select>
+                <span asp-validation-for="MemberID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="LicenseNumber" class="control-label"></label>

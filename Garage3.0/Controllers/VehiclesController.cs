@@ -71,13 +71,20 @@ namespace Garage3.Models
         // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RegisterNewVehicle([Bind("Id,ArrivalTime,LicenseNumber,Color,Brand,Model,NumberOfWheels,Size")] Vehicle vehicle, Member owner)
+        public async Task<IActionResult> RegisterNewVehicle([Bind("Id,ArrivalTime,LicenseNumber,Color,Brand,Model,NumberOfWheels,Size")] RegisterNewVehicleViewModel vh)
         {
+            var vehicle = new Vehicle();
             vehicle.ArrivalTime = DateTime.Now;
-
+            vehicle.LicenseNumber  =  vh.LicenseNumber;
+            vehicle.Brand = vh.Brand;
+            vehicle.Color  =  vh.Color;
+            vehicle.Model = vh.Model;
+            vehicle.NumberOfWheels  =  vh.NumberOfWheels;
+            var owner = db.Member.Where(m => m.MemberID == Int32.Parse(vh.MemberID)).FirstOrDefault(); 
+            vehicle.Owner  =  owner;
             
-            // TODO: How do we post the owner
-            vehicle.Owner = db.Member.Where(m => m.MemberID == owner.MemberID);
+            
+
             if (ModelState.IsValid)
             {
                 db.Add(vehicle);
@@ -89,7 +96,7 @@ namespace Garage3.Models
         private List<SelectListItem> OwnerSelect()
         {
             var output = new List<SelectListItem>();
-            var memberlist = db.Member.Where(v => v.MemberID != null);
+            var memberlist = db.Member.Where(v => v.MemberID != null).toli;
 
             foreach (var item in memberlist)
             {
@@ -97,6 +104,7 @@ namespace Garage3.Models
                 {
                     Text = item.FirstName +" "+ item.LastName,
                     Value = item.MemberID.ToString()
+                   
                 });
             }
             

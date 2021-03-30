@@ -34,8 +34,8 @@ namespace Garage3
                     options.UseSqlServer(Configuration.GetConnectionString("Garage3Context")));
             services.AddScoped<IRetrieveVehicleService, RetrieveVehicleService>();
             services.AddScoped<IVehicleTypeService, VehicleTypeService>();
-            
-                services.AddScoped<IParkingSpaceCalculations, ParkingSpaceCalculations>();
+            services.AddScoped<IOwnerSelectService, OwnerSelectService>();
+            services.AddScoped<IParkingSpaceCalculations, ParkingSpaceCalculations>();
 
         }
 
