@@ -21,34 +21,21 @@ namespace Garage3.Models
         }
 
         // GET: Vehicles
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search)
         {
-            var fullList = from vehicle in db.Vehicle
-                           join member in db.Member on vehicle.Owner equals member
-                           select new
-                           {
-                               VehicleID = vehicle.Id,
-                               Owner = $"{member.FirstName} {member.LastName}",
-                               MembershipType = member.MembershipType.Type,
-                               VehicleType = vehicle.VehicleType.Type,
-                               LicenseNumber = vehicle.LicenseNumber,
-                               TimeParked = DateTime.Now - vehicle.ArrivalTime
-                           };
-
-            List<VehicleOverviewViewModel> output = new List<VehicleOverviewViewModel>();
-
-            foreach (var v in fullList)
-            {
-                output.Add(new VehicleOverviewViewModel()
+            List<VehicleOverviewViewModel> output = await db.Vehicle
+                .Join(db.Member, vehicle => vehicle.Owner, member => member, 
+                (vehicle, member) => new VehicleOverviewViewModel
                 {
-                    VehicleID = v.VehicleID,
-                    Owner = v.Owner,
-                    MembershipType = v.MembershipType,
-                    VehicleType = v.VehicleType,
-                    LicenseNumber = v.LicenseNumber,
-                    TimeParked = v.TimeParked
-                });
-            }
+                    VehicleID = vehicle.Id,
+                    Owner = $"{member.FirstName} {member.LastName}",
+                    MembershipType = member.MembershipType.Type,
+                    VehicleType = vehicle.VehicleType.Type,
+                    LicenseNumber = vehicle.LicenseNumber,
+                    TimeParked = DateTime.Now - vehicle.ArrivalTime
+                })
+                .Where(v => String.IsNullOrEmpty(search) || (v.VehicleType.Contains(search) || v.LicenseNumber.Contains(search)))
+                .ToListAsync();
 
             return View(output);
         }
@@ -116,18 +103,26 @@ namespace Garage3.Models
         // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ArrivalTime,LicenseNumber,Color,Brand,Model,NumberOfWheels,Size")] Vehicle vehicle)
+        public async Task<IActionResult> Edit(int id, Vehicle vehicle)
         {
             if (id != vehicle.Id)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {
-                    db.Update(vehicle);
+                    var currentVehicle = db.Vehicle.FirstOrDefault(v => v.Id == vehicle.Id);
+                    if (currentVehicle == null)
+                        return NotFound();
+            
+                    currentVehicle.LicenseNumber = vehicle.LicenseNumber;
+                    currentVehicle.Color = vehicle.Color;
+                    currentVehicle.Brand = vehicle.Brand;
+                    currentVehicle.Model = vehicle.Model;
+                    currentVehicle.NumberOfWheels = vehicle.NumberOfWheels;
+
                     await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -141,9 +136,13 @@ namespace Garage3.Models
                         throw;
                     }
                 }
+
+      
                 return RedirectToAction(nameof(Index));
             }
-            return View(vehicle);
+
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Vehicles/Delete/5
@@ -186,21 +185,6 @@ namespace Garage3.Models
             return View();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> ParkingProcess(string LicenseNumber)
-        {
-            if (VehicleInDatabase(LicenseNumber))
-            {
-                ParkVehicle(LicenseNumber);
-
-                // TODO: Receipt
-                return RedirectToAction(nameof(Controllers.HomeController.Index));
-            }
-            else
-            {
-                return NewCarOrNewMember();
-            }
-        }
 
         private int GetMemberID()
         {
@@ -219,9 +203,37 @@ namespace Garage3.Models
             return memberID;
         }
 
-        private void ParkVehicle(string licenseNumber)
+       
+
+        
+        [HttpPost]
+        public IActionResult ParkingProcess(string LicenseNumber)
         {
-            var vehicle = db.Vehicle.Include(v => v.VehicleType).Include(v=>v.ParkedAt).Where(v => v.LicenseNumber == licenseNumber).FirstOrDefault();
+            if (VehicleInDatabase(LicenseNumber))
+            {
+                var returnedView = ParkVehicle(LicenseNumber);
+                // TODO: Receipt
+                return RedirectToAction(returnedView);
+            }
+            else
+            {
+                return NewCarOrNewMember();
+            }
+        }
+        private string ParkVehicle(string licenseNumber)
+        {
+            var vehicle = db.Vehicle.Include(v => v.VehicleType).Include(v => v.ParkedAt).Where(v => v.LicenseNumber == licenseNumber).FirstOrDefault();
+            // if vehicle is already parked inform user
+            if (vehicle.ParkedAt.Count()>0)
+            {
+                return "VehicleAlreadyParked";
+            }
+            // if no space for vehicle
+            var spaceCheck = new Garage3.Utilites.ParkingSpaceCalculations(db);            
+            if (spaceCheck.vehicleTypeStatistics().Where(v => v.Type == vehicle.VehicleType.Type).Select(v => v.AmountAbleToPark).First()<=0)
+            {                
+                return "NoSpaceForVehicle";
+            }
             var parkingSpaces = db.ParkingSpace.Include(v => v.Vehicle);
             // Get vehicle size
             var vehicleSize = vehicle.VehicleType.Size;
@@ -275,11 +287,21 @@ namespace Garage3.Models
                     }
                 }                
             }
-            vehicle.ArrivalTime = DateTime.Now;            
+            vehicle.ArrivalTime = DateTime.Now;
             db.SaveChanges();
+            return nameof(Garage3.Controllers.HomeController.Index);
+        }
+        public IActionResult VehicleAlreadyParked()
+        {
+            return View(nameof(VehicleAlreadyParked));
         }
 
-            private int RegisterNewMember()
+        public IActionResult NoSpaceForVehicle()
+        {
+            return View(nameof(NoSpaceForVehicle));
+        }
+
+        private int RegisterNewMember()
             {
                 throw new NotImplementedException();
                 int memberID;
