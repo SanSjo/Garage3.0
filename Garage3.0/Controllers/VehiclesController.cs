@@ -364,22 +364,16 @@ namespace Garage3.Models
 
         [HttpPost, ActionName("RetrieveParkedVehicle")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RetrieveConfirmed(string selectedVehicle)
+        public async Task<IActionResult> RetrieveConfirmed([Bind("SelectedVehicle")] string SelectedVehicle)
         {
-            if (String.IsNullOrEmpty(selectedVehicle))
+            if (String.IsNullOrEmpty(SelectedVehicle))
             {
                 return View();
             }
 
-            var vehicle = await db.Vehicle.Where(v => v.LicenseNumber == selectedVehicle).FirstAsync();
-            var member = await db.Member.Where(m => m == vehicle.Owner).FirstAsync();
-            var parkingSpots = await db.ParkingSpace.Where(p => vehicle.ParkedAt.Contains(p)).FirstAsync();
-
-
-            foreach (var parkingSpot in vehicle.ParkedAt)
-            {
-                parkingSpot.Vehicle.Clear();
-            }
+            var vehicle = await db.Vehicle.Include(p=>p.ParkedAt).Where(v => v.LicenseNumber == SelectedVehicle).FirstAsync();            
+            
+            vehicle.ParkedAt.Clear();            
 
             ReceiptOverviewModel receipt = new ReceiptOverviewModel()
             {
@@ -390,11 +384,11 @@ namespace Garage3.Models
                 Savings = 0
             };
 
-            TempData["Member"] = receipt.Member;
-            TempData["Vehicle"] = receipt.Vehicle;
-            TempData["Time Parked"] = receipt.TimeParked;
-            TempData["Cost"] = receipt.Cost;
-            TempData["Savings"] = receipt.Savings;
+            //TempData["Member"] = receipt.Member;
+            //TempData["Vehicle"] = receipt.Vehicle;
+            //TempData["Time Parked"] = receipt.TimeParked;
+            //TempData["Cost"] = receipt.Cost;
+            //TempData["Savings"] = receipt.Savings;
 
             vehicle.ArrivalTime = null;
 
