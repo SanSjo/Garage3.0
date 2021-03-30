@@ -11,9 +11,5 @@ namespace Garage3.Models
         public string Type { get; set; }
         public float Size { get; set; }
         public string imgSrc { get; set; }
-
-        [NotMapped]
-        public IFormFile ImageFile { get; set; }
-
     }
 }

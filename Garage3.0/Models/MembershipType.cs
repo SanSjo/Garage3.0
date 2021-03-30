@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Mvc;
+
 namespace Garage3.Models
 {
     public class MembershipType
@@ -12,7 +14,6 @@ namespace Garage3.Models
         [Key]
         public int MembershiptTypeID { get; set; }        
         public string Type { get; set; }
-        // TODO: What is a good value to have here?                               
-        public decimal Discount { get; set; }
+        public int Discount { get; set; }
     }
 }
