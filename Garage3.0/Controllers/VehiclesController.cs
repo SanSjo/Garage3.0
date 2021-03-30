@@ -96,7 +96,7 @@ namespace Garage3.Models
         private List<SelectListItem> OwnerSelect()
         {
             var output = new List<SelectListItem>();
-            var memberlist = db.Member.Where(v => v.MemberID != null).toli;
+            var memberlist = db.Member.Where(v => v.MemberID != null);
 
             foreach (var item in memberlist)
             {
@@ -343,13 +343,22 @@ namespace Garage3.Models
                 parkingSpot.Vehicle.Clear();
             }
 
+            decimal cost = 50*(decimal)(DateTime.Now - (DateTime)vehicle.ArrivalTime).TotalHours, savings = 0;
+
+            decimal discountValue = (DateTime.Compare((DateTime)member.ExtendedMemberShipEndDate, DateTime.Now) < 0 &&
+                DateTime.Compare((DateTime)member.ExtendedMemberShipEndDate, (DateTime)vehicle.ArrivalTime) > 0) ?
+                ((DateTime)member.ExtendedMemberShipEndDate - (DateTime)vehicle.ArrivalTime).Hours * 50 : cost;
+            savings = (member.MembershipType.Discount / 100) * discountValue;
+
+            cost -= savings;
+
             ReceiptOverviewModel receipt = new ReceiptOverviewModel()
             {
                 Member = $"{member.FirstName} {member.LastName}",
                 Vehicle = vehicle.LicenseNumber,
                 TimeParked = (DateTime.Now - vehicle.ArrivalTime).ToString(),
-                Cost = 0,
-                Savings = 0
+                Cost = cost,
+                Savings = savings
             };
 
             TempData["Member"] = receipt.Member;
