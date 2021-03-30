@@ -116,18 +116,26 @@ namespace Garage3.Models
         // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ArrivalTime,LicenseNumber,Color,Brand,Model,NumberOfWheels,Size")] Vehicle vehicle)
+        public async Task<IActionResult> Edit(int id, Vehicle vehicle)
         {
             if (id != vehicle.Id)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {
-                    db.Update(vehicle);
+                    var currentVehicle = db.Vehicle.FirstOrDefault(v => v.Id == vehicle.Id);
+                    if (currentVehicle == null)
+                        return NotFound();
+            
+                    currentVehicle.LicenseNumber = vehicle.LicenseNumber;
+                    currentVehicle.Color = vehicle.Color;
+                    currentVehicle.Brand = vehicle.Brand;
+                    currentVehicle.Model = vehicle.Model;
+                    currentVehicle.NumberOfWheels = vehicle.NumberOfWheels;
+
                     await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -141,9 +149,13 @@ namespace Garage3.Models
                         throw;
                     }
                 }
+
+      
                 return RedirectToAction(nameof(Index));
             }
-            return View(vehicle);
+
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Vehicles/Delete/5
