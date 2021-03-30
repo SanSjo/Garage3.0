@@ -21,34 +21,21 @@ namespace Garage3.Models
         }
 
         // GET: Vehicles
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search)
         {
-            var fullList = from vehicle in db.Vehicle
-                           join member in db.Member on vehicle.Owner equals member
-                           select new
-                           {
-                               VehicleID = vehicle.Id,
-                               Owner = $"{member.FirstName} {member.LastName}",
-                               MembershipType = member.MembershipType.Type,
-                               VehicleType = vehicle.VehicleType.Type,
-                               LicenseNumber = vehicle.LicenseNumber,
-                               TimeParked = DateTime.Now - vehicle.ArrivalTime
-                           };
-
-            List<VehicleOverviewViewModel> output = new List<VehicleOverviewViewModel>();
-
-            foreach (var v in fullList)
-            {
-                output.Add(new VehicleOverviewViewModel()
+            List<VehicleOverviewViewModel> output = await db.Vehicle
+                .Join(db.Member, vehicle => vehicle.Owner, member => member, 
+                (vehicle, member) => new VehicleOverviewViewModel
                 {
-                    VehicleID = v.VehicleID,
-                    Owner = v.Owner,
-                    MembershipType = v.MembershipType,
-                    VehicleType = v.VehicleType,
-                    LicenseNumber = v.LicenseNumber,
-                    TimeParked = v.TimeParked
-                });
-            }
+                    VehicleID = vehicle.Id,
+                    Owner = $"{member.FirstName} {member.LastName}",
+                    MembershipType = member.MembershipType.Type,
+                    VehicleType = vehicle.VehicleType.Type,
+                    LicenseNumber = vehicle.LicenseNumber,
+                    TimeParked = DateTime.Now - vehicle.ArrivalTime
+                })
+                .Where(v => String.IsNullOrEmpty(search) || (v.VehicleType.Contains(search) || v.LicenseNumber.Contains(search)))
+                .ToListAsync();
 
             return View(output);
         }
@@ -198,14 +185,13 @@ namespace Garage3.Models
         }
 
         [HttpPost]
-        public async Task<IActionResult> ParkingProcess(string LicenseNumber)
+        public IActionResult ParkingProcess(string LicenseNumber)
         {
             if (VehicleInDatabase(LicenseNumber))
             {
-                ParkVehicle(LicenseNumber);
-
+                var returnedView = ParkVehicle(LicenseNumber);
                 // TODO: Receipt
-                return RedirectToAction(nameof(Controllers.HomeController.Index));
+                return RedirectToAction(returnedView);
             }
             else
             {
@@ -230,9 +216,20 @@ namespace Garage3.Models
             return memberID;
         }
 
-        private void ParkVehicle(string licenseNumber)
+        public IActionResult VehicleAlreadyParked()
         {
-            var vehicle = db.Vehicle.Include(v => v.VehicleType).Include(v=>v.ParkedAt).Where(v => v.LicenseNumber == licenseNumber).FirstOrDefault();
+            return View(nameof(VehicleAlreadyParked));
+        }
+
+        
+        private string ParkVehicle(string licenseNumber)
+        {
+            var vehicle = db.Vehicle.Include(v => v.VehicleType).Include(v => v.ParkedAt).Where(v => v.LicenseNumber == licenseNumber).FirstOrDefault();
+            // if vehicle is already parked inform user
+            if (vehicle.ParkedAt.Count()>0)
+            {
+                return "VehicleAlreadyParked";
+            }            
             var parkingSpaces = db.ParkingSpace.Include(v => v.Vehicle);
             // Get vehicle size
             var vehicleSize = vehicle.VehicleType.Size;
@@ -286,8 +283,9 @@ namespace Garage3.Models
                     }
                 }                
             }
-            vehicle.ArrivalTime = DateTime.Now;            
+            vehicle.ArrivalTime = DateTime.Now;
             db.SaveChanges();
+            return "\"Index\",\"Home\"";
         }
 
             private int RegisterNewMember()

@@ -24,7 +24,15 @@ namespace Garage3.Controllers
         // GET: Members
         public async Task<IActionResult> Index(string search)
         {
-            var members = from m in db.Member select m;
+            List<MembersViewModel> members = await db.Member
+                .Select(member => new MembersViewModel
+                {
+                    MemberID = member.MemberID,
+                    FirstName = member.FirstName,
+                    LastName = member.LastName,
+                    NrOfVehicles = (from vehicle in db.Vehicle.Where(v => v.Owner.Equals(member)) select vehicle)
+                                                      .ToList().Count
+                }).ToListAsync();
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -32,27 +40,13 @@ namespace Garage3.Controllers
 
                 foreach (string s in searchParams)
                 {
-                    members = members.Where(m => m.FirstName.Contains(s) || m.LastName.Contains(s));
+                    members = members.Where(m => m.FirstName.Contains(s, StringComparison.OrdinalIgnoreCase) || m.LastName.Contains(s, StringComparison.OrdinalIgnoreCase)).ToList();
                 }
             }
 
-            List<MembersViewModel> filteredList = new List<MembersViewModel>();
+            members = members.OrderBy(m => m.FirstName.Substring(0, 2), StringComparer.Ordinal).ToList();
             
-            foreach (Member m in members)
-            {
-                filteredList.Add(new MembersViewModel()
-                {
-                    MemberID = m.MemberID,
-                    FirstName = m.FirstName,
-                    LastName = m.LastName,
-                    NrOfVehicles = (from vehicle in db.Vehicle.Where(v => v.Owner.Equals(m)) select vehicle)
-                                                      .ToList().Count
-                });
-            }
-
-            filteredList = filteredList.OrderBy(m => m.FirstName.Substring(0, 2), StringComparer.Ordinal).ToList();
-            
-            return View(filteredList);
+            return View(members);
         }
 
         // GET: Members/Details/5
