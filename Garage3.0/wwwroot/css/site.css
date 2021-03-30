@@ -13,7 +13,6 @@ body {
     background-color: #131313
 }
 
-
 .content {
     color: whitesmoke;
     margin-left:250px;           
@@ -23,6 +22,16 @@ body {
 
 .table{
     color:whitesmoke;
+}
+
+/***** Modal styling *****/
+
+.modal-content {
+    background-color: #131313
+}
+
+.close {
+    color: whitesmoke;
 }
 
 /***** Footer *****/
@@ -119,4 +128,5 @@ body {
     left: 10px;
     z-index: 997;    
 }
+
 

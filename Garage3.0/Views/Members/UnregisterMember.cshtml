@@ -1,12 +1,12 @@
 ﻿@model Garage3.Models.Member
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "UnregisterMember";
 }
 
-<h1>Delete</h1>
+<h1>Unregister Member</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Is this the member you want to remove?</h3>
 <div>
     <h4>Member</h4>
     <hr />
@@ -43,9 +43,9 @@
         </dd>
     </dl>
     
-    <form asp-action="Delete">
+    <form asp-action="UnregisterMember">
         <input type="hidden" asp-for="MemberID" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <input type="submit" value="UnregisterMember" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>
 </div>

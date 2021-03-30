@@ -100,22 +100,33 @@ namespace Garage3.Models
             return View(vehicle);
         }
 
+
+        // BUG: Cant enter decimals as discount
+        // BUG: Deleteing membershiptype while member exists with that type causes crash
         // POST: Vehicles/Edit/5 To protect from overposting attacks, enable the specific properties
         // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ArrivalTime,LicenseNumber,Color,Brand,Model,NumberOfWheels,Size")] Vehicle vehicle)
+        public async Task<IActionResult> Edit(int id, Vehicle vehicle)
         {
             if (id != vehicle.Id)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {
-                    db.Update(vehicle);
+                    var currentVehicle = db.Vehicle.FirstOrDefault(v => v.Id == vehicle.Id);
+                    if (currentVehicle == null)
+                        return NotFound();
+            
+                    currentVehicle.LicenseNumber = vehicle.LicenseNumber;
+                    currentVehicle.Color = vehicle.Color;
+                    currentVehicle.Brand = vehicle.Brand;
+                    currentVehicle.Model = vehicle.Model;
+                    currentVehicle.NumberOfWheels = vehicle.NumberOfWheels;
+
                     await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -129,13 +140,17 @@ namespace Garage3.Models
                         throw;
                     }
                 }
+
+      
                 return RedirectToAction(nameof(Index));
             }
-            return View(vehicle);
+
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Vehicles/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> UnregisterVehicle(int? id)
         {
             if (id == null)
             {
@@ -153,12 +168,13 @@ namespace Garage3.Models
         }
 
         // POST: Vehicles/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("UnregisterVehicle")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var vehicle = await db.Vehicle.FindAsync(id);
             db.Vehicle.Remove(vehicle);
+
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -166,27 +182,6 @@ namespace Garage3.Models
         private bool VehicleExists(int id)
         {
             return db.Vehicle.Any(e => e.Id == id);
-        }
-
-        public IActionResult Parking()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ParkingProcess(string LicenseNumber)
-        {
-            if (VehicleInDatabase(LicenseNumber))
-            {
-                ParkVehicle(LicenseNumber);
-
-                // TODO: Receipt
-                return RedirectToAction(nameof(Controllers.HomeController.Index));
-            }
-            else
-            {
-                return NewCarOrNewMember();
-            }
         }
 
         private int GetMemberID()
@@ -205,10 +200,38 @@ namespace Garage3.Models
             int memberID;
             return memberID;
         }
-
-        private void ParkVehicle(string licenseNumber)
+        public IActionResult Parking()
         {
-            var vehicle = db.Vehicle.Include(v => v.VehicleType).Include(v=>v.ParkedAt).Where(v => v.LicenseNumber == licenseNumber).FirstOrDefault();
+            return View();
+        }
+
+        public IActionResult ParkingProcess(string LicenseNumber)
+        {
+            if (VehicleInDatabase(LicenseNumber))
+            {
+                var returnedView = ParkVehicle(LicenseNumber);
+                // TODO: Receipt
+                return RedirectToAction(returnedView);
+            }
+            else
+            {
+                return NewCarOrNewMember();
+            }
+        }
+        private string ParkVehicle(string licenseNumber)
+        {
+            var vehicle = db.Vehicle.Include(v => v.VehicleType).Include(v => v.ParkedAt).Where(v => v.LicenseNumber == licenseNumber).FirstOrDefault();
+            // if vehicle is already parked inform user
+            if (vehicle.ParkedAt.Count()>0)
+            {
+                return "VehicleAlreadyParked";
+            }
+            // if no space for vehicle
+            var spaceCheck = new Garage3.Utilites.ParkingSpaceCalculations(db);            
+            if (spaceCheck.vehicleTypeStatistics().Where(v => v.Type == vehicle.VehicleType.Type).Select(v => v.AmountAbleToPark).First()<=0)
+            {                
+                return "NoSpaceForVehicle";
+            }
             var parkingSpaces = db.ParkingSpace.Include(v => v.Vehicle);
             // Get vehicle size
             var vehicleSize = vehicle.VehicleType.Size;
@@ -234,7 +257,7 @@ namespace Garage3.Models
                     }
                 }
             }
-            if (vehicleSize>1)
+            if (vehicleSize>=1)
             {                
                 List<ParkingSpace> emptySpaces = new List<ParkingSpace>();                             
                 foreach (var parkingspace in parkingSpaces)
@@ -262,8 +285,18 @@ namespace Garage3.Models
                     }
                 }                
             }
-            vehicle.ArrivalTime = DateTime.Now;            
+            vehicle.ArrivalTime = DateTime.Now;
             db.SaveChanges();
+            return nameof(Garage3.Controllers.HomeController.Index);
+        }
+        public IActionResult VehicleAlreadyParked()
+        {
+            return View(nameof(VehicleAlreadyParked));
+        }
+
+        public IActionResult NoSpaceForVehicle()
+        {
+            return View(nameof(NoSpaceForVehicle));
         }
 
         [HttpPost, ActionName("RetrieveVehicle")]
