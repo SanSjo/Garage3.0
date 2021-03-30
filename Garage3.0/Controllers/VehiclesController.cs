@@ -21,34 +21,21 @@ namespace Garage3.Models
         }
 
         // GET: Vehicles
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search)
         {
-            var fullList = from vehicle in db.Vehicle
-                           join member in db.Member on vehicle.Owner equals member
-                           select new
-                           {
-                               VehicleID = vehicle.Id,
-                               Owner = $"{member.FirstName} {member.LastName}",
-                               MembershipType = member.MembershipType.Type,
-                               VehicleType = vehicle.VehicleType.Type,
-                               LicenseNumber = vehicle.LicenseNumber,
-                               TimeParked = DateTime.Now - vehicle.ArrivalTime
-                           };
-
-            List<VehicleOverviewViewModel> output = new List<VehicleOverviewViewModel>();
-
-            foreach (var v in fullList)
-            {
-                output.Add(new VehicleOverviewViewModel()
+            List<VehicleOverviewViewModel> output = await db.Vehicle
+                .Join(db.Member, vehicle => vehicle.Owner, member => member, 
+                (vehicle, member) => new VehicleOverviewViewModel
                 {
-                    VehicleID = v.VehicleID,
-                    Owner = v.Owner,
-                    MembershipType = v.MembershipType,
-                    VehicleType = v.VehicleType,
-                    LicenseNumber = v.LicenseNumber,
-                    TimeParked = v.TimeParked
-                });
-            }
+                    VehicleID = vehicle.Id,
+                    Owner = $"{member.FirstName} {member.LastName}",
+                    MembershipType = member.MembershipType.Type,
+                    VehicleType = vehicle.VehicleType.Type,
+                    LicenseNumber = vehicle.LicenseNumber,
+                    TimeParked = DateTime.Now - vehicle.ArrivalTime
+                })
+                .Where(v => String.IsNullOrEmpty(search) || (v.VehicleType.Contains(search) || v.LicenseNumber.Contains(search)))
+                .ToListAsync();
 
             return View(output);
         }
