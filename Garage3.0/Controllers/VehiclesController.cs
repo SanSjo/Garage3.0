@@ -150,25 +150,25 @@ namespace Garage3.Models
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Vehicles/Delete/5
-        //public async Task<IActionResult> UnregisterVehicle(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        //GET: Vehicles/Delete/5
+        public async Task<IActionResult> UnregisterVehicle(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        //    var vehicle = await db.Vehicle
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (vehicle == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var vehicle = await db.Vehicle
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
 
-        //    return View(vehicle);
-        //}
+            return View(vehicle);
+        }
 
-        //public async Task<IActionResult> UnregisterVehicle(string selectVehicle)
+        //public async Task<IActionResult> RetrieveVehicle(string selectVehicle)
         //{
         //    IQueryable<string> genreQuery = from m in db.Vehicle
         //                                    orderby m.LicenseNumber
@@ -185,7 +185,7 @@ namespace Garage3.Models
         //    var selectVehicleVM = new RetrieveVehicleViewModel
         //    {
         //        Vehicles = new SelectList(await genreQuery.Distinct().ToListAsync()),
-              
+
 
         //    };
 
@@ -193,14 +193,16 @@ namespace Garage3.Models
         //    return View(selectVehicleVM);
         //}
 
-        public ActionResult UnregisterVehicle()
+
+
+        public ActionResult RetrieveVehicle()
         {
             return View();
         }
 
 
         // POST: Vehicles/Delete/5
-        [HttpPost, ActionName("UnregisterVehicle")]
+        [HttpPost, ActionName("RetrieveVehicle")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string SelectedVehicle)
         {

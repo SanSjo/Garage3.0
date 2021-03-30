@@ -1,0 +1,53 @@
+﻿@inject Garage3.Services.IRetrieveVehicleService service
+@model Garage3.Models.ViewModels.RetrieveVehicleViewModel
+
+@{
+    ViewData["Title"] = "RetrieveVehicle";
+}
+
+<h1>Retrieve </h1>
+
+
+<div>
+    <h4>Vehicle</h4>
+    <hr />
+
+    <div>
+        <form asp-controller="Vehicles" asp-action="RetrieveVehicle" id="RetrieveVehicle">
+
+
+            <label>Select a Licence number</label>
+
+            <div class="form-group">
+                <select asp-for="SelectedVehicle" asp-items="@await service.GetParkedVehicles()" class="form-control box-adjustment">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+            </div>
+            <input type="submit" id="btnRetrieveVehicle" value="Retrieve Vehicle" class="btn btn-primary">
+        </form>
+    </div>
+    <div>
+        <a class="btn btn-primary mt-2" asp-action="Index" asp-controller="Home">Back to main menu</a>
+    </div>
+
+    @*<input asp-for="SelectedVehicle"   />
+
+        <select asp-for="SelectedVehicle" asp-items="@await service.GetParkedVehicles()">
+            <option value=""></option>
+
+        </select>*@
+
+    @*<form asp-action="UnregisterVehicle">
+            <input type="hidden" asp-for="SelectedVehicle" />
+            <input type="submit" value="UnregisterVehicle" class="btn btn-danger" /> |
+            <a asp-action="Index">Back to List</a>
+        </form>*@
+</div>
+
+
+
+@*<script type="text/javascript">
+        $(document).ready(function () {
+            $('.combobox').combobox();
+        });
+    </script>*@
