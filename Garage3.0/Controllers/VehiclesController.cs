@@ -257,7 +257,7 @@ namespace Garage3.Models
             }
             else
             {
-                return NewCarOrNewMember();
+                return View("ThisCarIsNotRegistered");
             }
         }
         private string ParkVehicle(string licenseNumber)
