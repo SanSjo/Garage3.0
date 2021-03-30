@@ -251,7 +251,7 @@ namespace Garage3.Controllers
         {
             var member = await db.Member.FindAsync(id);
             var memberVehicles = new List<Vehicle>();
-            memberVehicles.Add(db.Vehicle.Where(v => v.Owner == id);
+            //memberVehicles.Add(db.Vehicle.Where(v => v.Owner == id);
             db.Member.Remove(member);
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
