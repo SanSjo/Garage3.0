@@ -186,14 +186,13 @@ namespace Garage3.Models
         }
 
         [HttpPost]
-        public async Task<IActionResult> ParkingProcess(string LicenseNumber)
+        public IActionResult ParkingProcess(string LicenseNumber)
         {
             if (VehicleInDatabase(LicenseNumber))
             {
-                ParkVehicle(LicenseNumber);
-
+                var returnedView = ParkVehicle(LicenseNumber);
                 // TODO: Receipt
-                return RedirectToAction(nameof(Controllers.HomeController.Index));
+                return RedirectToAction(returnedView);
             }
             else
             {
@@ -218,9 +217,20 @@ namespace Garage3.Models
             return memberID;
         }
 
-        private void ParkVehicle(string licenseNumber)
+        public IActionResult VehicleAlreadyParked()
         {
-            var vehicle = db.Vehicle.Include(v => v.VehicleType).Include(v=>v.ParkedAt).Where(v => v.LicenseNumber == licenseNumber).FirstOrDefault();
+            return View(nameof(VehicleAlreadyParked));
+        }
+
+        
+        private string ParkVehicle(string licenseNumber)
+        {
+            var vehicle = db.Vehicle.Include(v => v.VehicleType).Include(v => v.ParkedAt).Where(v => v.LicenseNumber == licenseNumber).FirstOrDefault();
+            // if vehicle is already parked inform user
+            if (vehicle.ParkedAt.Count()>0)
+            {
+                return "VehicleAlreadyParked";
+            }            
             var parkingSpaces = db.ParkingSpace.Include(v => v.Vehicle);
             // Get vehicle size
             var vehicleSize = vehicle.VehicleType.Size;
@@ -274,8 +284,9 @@ namespace Garage3.Models
                     }
                 }                
             }
-            vehicle.ArrivalTime = DateTime.Now;            
+            vehicle.ArrivalTime = DateTime.Now;
             db.SaveChanges();
+            return "\"Index\",\"Home\"";
         }
 
             private int RegisterNewMember()
