@@ -62,7 +62,7 @@ namespace Garage3.Models
 
         // GET: Vehicles/RegisterNewVehicle
         public IActionResult RegisterNewVehicle()
-        {
+        {            
             return View();
         }
 
@@ -70,12 +70,21 @@ namespace Garage3.Models
         // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RegisterNewVehicle([Bind("Id,ArrivalTime,LicenseNumber,Color,Brand,Model,NumberOfWheels,Size")] Vehicle vehicle, Member owner)
+        public async Task<IActionResult> RegisterNewVehicle([Bind("MemberID,LicenseNumber,VehicleType,Color,Brand,Model,NumberOfWheels")] RegisterNewVehicleViewModel vh)
         {
-            vehicle.ArrivalTime = DateTime.Now;
+            var vehicle = new Vehicle();            
+            vehicle.LicenseNumber  =  vh.LicenseNumber;
+            vehicle.Brand = vh.Brand;
+            vehicle.Color  =  vh.Color;
+            vehicle.Model = vh.Model;
+            vehicle.NumberOfWheels  =  vh.NumberOfWheels;
+            var owner = db.Member.Where(m => m.MemberID == Int32.Parse(vh.MemberID)).FirstOrDefault();
+            var vehicleType = db.VehicleType.Where(v => v.Type == vh.VehicleType).FirstOrDefault();
+            vehicle.Owner  =  owner;
+            vehicle.VehicleType = vehicleType;
+            
+            
 
-            // TODO: How do we post the owner
-            vehicle.Owner = owner;
             if (ModelState.IsValid)
             {
                 db.Add(vehicle);
@@ -84,7 +93,7 @@ namespace Garage3.Models
             }
             return View(vehicle);
         }
-
+        
         // GET: Vehicles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
