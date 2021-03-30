@@ -28,6 +28,13 @@ body {
     color: red;
 }
 
+td {
+    color: whitesmoke;
+}
+
+tr {
+    color: whitesmoke;
+}
 /***** Modal styling *****/
 
 .modal-content {
