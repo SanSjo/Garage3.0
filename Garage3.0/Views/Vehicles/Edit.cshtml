@@ -4,11 +4,11 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Edit Vehicle</h1>
 
-<h4>Vehicle</h4>
+
 <hr />
-<div class="row">
+<div class="d-flex flex-column align-items-center">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -39,17 +39,17 @@
                 <input asp-for="NumberOfWheels" class="form-control" />
                 <span asp-validation-for="NumberOfWheels" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
+            </div>*@
 
-             @*Button trigger modal 
+             @*Button trigger modal*@ 
             <button id="submit-button" type="submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                 Save
             </button>
             <a asp-action="Index" class="btn btn-primary ml-2">Back to parking lot</a>
 
-             Modal 
+             @*Modal*@ 
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -68,14 +68,14 @@
                         </div>
                     </div>
                 </div>
-            </div>*@
+            </div>
         </form>
     </div>
 </div>
 
-<div>
+@*<div>
     <a asp-action="Index">Back to List</a>
-</div>
+</div>*@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
