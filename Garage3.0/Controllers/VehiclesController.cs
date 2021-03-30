@@ -24,19 +24,16 @@ namespace Garage3.Models
         // GET: Vehicles
         public async Task<IActionResult> Index(string search)
         {
-            List<VehicleOverviewViewModel> output = await db.Vehicle
-                .Join(db.Member, vehicle => vehicle.Owner, member => member, 
-                (vehicle, member) => new VehicleOverviewViewModel
+            List<VehicleOverviewViewModel> output = await db.Vehicle.Include(v=>v.Owner).Include(v=>v.VehicleType).Include(v=>v.Owner.MembershipType).Select(vehicle=>new VehicleOverviewViewModel                
                 {
                     VehicleID = vehicle.Id,
-                    Owner = $"{member.FirstName} {member.LastName}",
-                    MembershipType = member.MembershipType.Type,
+                    Owner = $"{vehicle.Owner.FirstName} {vehicle.Owner.LastName}",
+                    MembershipType = vehicle.Owner.MembershipType.Type,
                     VehicleType = vehicle.VehicleType.Type,
                     LicenseNumber = vehicle.LicenseNumber,
                     TimeParked = vehicle.ArrivalTime != null ? DateTime.Now - vehicle.ArrivalTime : null
                 })
-                .Where(v => String.IsNullOrEmpty(search) || (v.VehicleType.Contains(search) || v.LicenseNumber.Contains(search))
-                && v.TimeParked != null)
+                .Where(v => String.IsNullOrEmpty(search) || (v.VehicleType.Contains(search) || v.LicenseNumber.Contains(search)))
                 .ToListAsync();
 
             return View(output);

@@ -17,6 +17,9 @@
     <thead>
         <tr>
             <th>
+                Parking Status
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Owner)
             </th>
             <th>
@@ -35,29 +38,42 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Owner)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MembershipType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VehicleType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LicenseNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TimeParked)
-            </td>            
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.VehicleID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.VehicleID">Details</a> |
-                <a asp-action="UnregisterVehicle" asp-route-id="@item.VehicleID">Unregister</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @{
+                        if (item.TimeParked != null)
+                        {
+                            <i class="fas fa-check-circle"></i>
+                        }
+                        else
+                        {
+                            <i class="fas fa-times-circle"></i>
+                        }
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Owner)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MembershipType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VehicleType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LicenseNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TimeParked)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.VehicleID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.VehicleID">Details</a> |
+                    <a asp-action="UnregisterVehicle" asp-route-id="@item.VehicleID">Unregister</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
