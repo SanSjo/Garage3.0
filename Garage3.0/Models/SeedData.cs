@@ -94,9 +94,9 @@ namespace Garage3.Models
                     var owner5 = context.Member.Where(m => m.MemberID == 5).FirstOrDefault();
 
                     context.Vehicle.AddRange(
-                        new Vehicle { Owner = owner1, ArrivalTime = DateTime.Parse("2021-03-02"), Brand = "Volvo", NumberOfWheels = 4, LicenseNumber = "ABC123", Color = "Black", Model = "E4", VehicleType = car },
-                        new Vehicle { Owner = owner2, ArrivalTime = DateTime.Parse("2021-03-02"), Brand = "Yamaha", NumberOfWheels = 2, LicenseNumber = "VBA234", Color = "Brown", Model = "E5", VehicleType = motorcycle },
-                        new Vehicle { Owner = owner3, ArrivalTime = DateTime.Parse("2021-03-02"), Brand = "Toyota", NumberOfWheels = 4, LicenseNumber = "DHI137", Color = "Orangie", Model = "E0", VehicleType = pickup },
+                        new Vehicle { Owner = owner1, Brand = "Volvo", NumberOfWheels = 4, LicenseNumber = "ABC123", Color = "Black", Model = "E4", VehicleType = car },
+                        new Vehicle { Owner = owner2, Brand = "Yamaha", NumberOfWheels = 2, LicenseNumber = "VBA234", Color = "Brown", Model = "E5", VehicleType = motorcycle },
+                        new Vehicle { Owner = owner3, Brand = "Toyota", NumberOfWheels = 4, LicenseNumber = "DHI137", Color = "Orangie", Model = "E0", VehicleType = pickup },
                         new Vehicle { Owner = owner4, Brand = "Mercedes", NumberOfWheels = 6, LicenseNumber = "BCA354", Color = "DowerBlue", Model = "E9", VehicleType = truck },
                         new Vehicle { Owner = owner5, Brand = "Harley", NumberOfWheels = 2, LicenseNumber = "DCI298", Color = "MaybeYw", Model = "EU", VehicleType = motorcycle }
                         );
