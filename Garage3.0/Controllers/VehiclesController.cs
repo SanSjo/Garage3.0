@@ -33,9 +33,10 @@ namespace Garage3.Models
                     MembershipType = member.MembershipType.Type,
                     VehicleType = vehicle.VehicleType.Type,
                     LicenseNumber = vehicle.LicenseNumber,
-                    TimeParked = DateTime.Now - vehicle.ArrivalTime
+                    TimeParked = vehicle.ArrivalTime != null ? DateTime.Now - vehicle.ArrivalTime : null
                 })
-                .Where(v => String.IsNullOrEmpty(search) || (v.VehicleType.Contains(search) || v.LicenseNumber.Contains(search)))
+                .Where(v => String.IsNullOrEmpty(search) || (v.VehicleType.Contains(search) || v.LicenseNumber.Contains(search))
+                && v.TimeParked != null)
                 .ToListAsync();
 
             return View(output);
@@ -100,6 +101,9 @@ namespace Garage3.Models
             return View(vehicle);
         }
 
+
+        // BUG: Cant enter decimals as discount
+        // BUG: Deleteing membershiptype while member exists with that type causes crash
         // POST: Vehicles/Edit/5 To protect from overposting attacks, enable the specific properties
         // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -232,12 +236,6 @@ namespace Garage3.Models
             return db.Vehicle.Any(e => e.Id == id);
         }
 
-        public IActionResult Parking()
-        {
-            return View();
-        }
-
-
         private int GetMemberID()
         {
             throw new NotImplementedException();
@@ -254,11 +252,11 @@ namespace Garage3.Models
             int memberID;
             return memberID;
         }
+        public IActionResult Parking()
+        {
+            return View();
+        }
 
-       
-
-        
-        [HttpPost]
         public IActionResult ParkingProcess(string LicenseNumber)
         {
             if (VehicleInDatabase(LicenseNumber))
@@ -311,7 +309,7 @@ namespace Garage3.Models
                     }
                 }
             }
-            if (vehicleSize>1)
+            if (vehicleSize>=1)
             {                
                 List<ParkingSpace> emptySpaces = new List<ParkingSpace>();                             
                 foreach (var parkingspace in parkingSpaces)
@@ -351,6 +349,46 @@ namespace Garage3.Models
         public IActionResult NoSpaceForVehicle()
         {
             return View(nameof(NoSpaceForVehicle));
+        }
+
+        [HttpPost, ActionName("RetrieveVehicle")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RetrieveConfirmed(string selectedVehicle)
+        {
+            if (String.IsNullOrEmpty(selectedVehicle))
+            {
+                return View();
+            }
+
+            var vehicle = await db.Vehicle.Where(v => v.LicenseNumber == selectedVehicle).FirstAsync();
+            var member = await db.Member.Where(m => m == vehicle.Owner).FirstAsync();
+            var parkingSpots = await db.ParkingSpace.Where(p => vehicle.ParkedAt.Contains(p)).FirstAsync();
+
+            foreach (var parkingSpot in vehicle.ParkedAt)
+            {
+                parkingSpot.Vehicle.Clear();
+            }
+
+            ReceiptOverviewModel receipt = new ReceiptOverviewModel()
+            {
+                Member = $"{member.FirstName} {member.LastName}",
+                Vehicle = vehicle.LicenseNumber,
+                TimeParked = (DateTime.Now - vehicle.ArrivalTime).ToString(),
+                Cost = 0,
+                Savings = 0
+            };
+
+            TempData["Member"] = receipt.Member;
+            TempData["Vehicle"] = receipt.Vehicle;
+            TempData["Time Parked"] = receipt.TimeParked;
+            TempData["Cost"] = receipt.Cost;
+            TempData["Savings"] = receipt.Savings;
+
+            vehicle.ArrivalTime = null;
+
+            await db.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Home");
         }
 
         private int RegisterNewMember()

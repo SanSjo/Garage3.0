@@ -14,7 +14,7 @@ namespace Garage3.Models
 
         // TODO: check PID so that the month and day are valid numbers
         [Display(Name = "Personal Identity Number")]
-        [Remote(action: nameof(MembersController.IsAlreadyAMember), controller: "Members")]        
+        [Remote(action: nameof(MembersController.IsAlreadyAMember), controller: "Members" ,AdditionalFields="MemberID")]        
         public string PersonalIdentityNumber { get; set; }
 
         // TODO: Add check that first name isnt the same as last name
@@ -32,6 +32,8 @@ namespace Garage3.Models
 
         public DateTime Joined { get; set; }
 
+        [Display(Name = "Membership End Date")]
+        [DataType(DataType.DateTime)]
         public DateTime? ExtendedMemberShipEndDate { get; set; }
     }
 }
