@@ -2,7 +2,7 @@
 @model Garage3.Models.Vehicle
 
 @{
-    ViewData["Title"] = "RetrieveVehicle";
+    ViewData["Title"] = "Retrieve Parked Vehicle";
 }
 
 <h1>Retrieve </h1>
@@ -13,7 +13,7 @@
     <hr />
 
     <div class="container w-25">
-        <form asp-controller="Vehicles" asp-action="RetrieveParkedVehicle" >
+        <form asp-controller="Vehicles" asp-action="RetrieveVehicle" >
 
 
             <label>Select a Licence number</label>
@@ -23,7 +23,7 @@
                     <option selected="selected" value="">Please select</option>
                 </select>
             </div>
-            <input type="submit" value="Retrieve Vehicle" class="btn btn-primary">
+            <input type="submit" value="RetrieveVehicle" class="btn btn-primary">
         </form>
     </div>
     <div>

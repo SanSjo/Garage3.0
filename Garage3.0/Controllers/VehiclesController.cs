@@ -204,7 +204,7 @@ namespace Garage3.Models
 
 
 
-        public ActionResult RetrieveParkedVehicle()
+        public ActionResult RetrieveVehicle()
         {
             return View();
         }
@@ -362,9 +362,9 @@ namespace Garage3.Models
             return View(nameof(NoSpaceForVehicle));
         }
 
-        [HttpPost, ActionName("RetrieveParkedVehicle")]
+        [HttpPost, ActionName("RetrieveVehicle")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RetrieveConfirmed(string selectedVehicle)
+        public async Task<IActionResult> RetrieveConfirmed([Bind("LicenseNumber")] string selectedVehicle)
         {
             if (String.IsNullOrEmpty(selectedVehicle))
             {
