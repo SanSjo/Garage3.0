@@ -371,8 +371,8 @@ namespace Garage3.Models
                 return View();
             }
 
-            var vehicle = await db.Vehicle.Include(p=>p.ParkedAt).Where(v => v.LicenseNumber == SelectedVehicle).FirstAsync();            
-            
+            var vehicle = await db.Vehicle.Include(p=>p.ParkedAt).Where(v => v.LicenseNumber == SelectedVehicle).FirstAsync();
+            var member = db.Vehicle.Include(m => m.Owner).Where(m => m.LicenseNumber == SelectedVehicle);
             vehicle.ParkedAt.Clear();            
 
             ReceiptOverviewModel receipt = new ReceiptOverviewModel()
@@ -389,6 +389,8 @@ namespace Garage3.Models
             //TempData["Time Parked"] = receipt.TimeParked;
             //TempData["Cost"] = receipt.Cost;
             //TempData["Savings"] = receipt.Savings;
+            
+            TempData["Savings"] = "Temp";
 
             vehicle.ArrivalTime = null;
 
