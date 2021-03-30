@@ -244,8 +244,13 @@ namespace Garage3.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var member = await db.Member.FindAsync(id);
-            var memberVehicles = new List<Vehicle>();
-            //memberVehicles.Add(db.Vehicle.Where(v => v.Owner == id);
+            //var memberVehicles = new List<Vehicle>();
+            var memberVehicles = db.Vehicle.Where(v => v.Owner == member);
+
+            foreach (var vehicle in memberVehicles)
+            {
+                db.Vehicle.Remove(vehicle);
+            }
             db.Member.Remove(member);
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
