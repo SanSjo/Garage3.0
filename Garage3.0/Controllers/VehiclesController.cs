@@ -7,6 +7,7 @@ using Garage3.Data;
 using Garage3.Models.ViewModels;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Garage3.Models
@@ -61,6 +62,7 @@ namespace Garage3.Models
         // GET: Vehicles/RegisterNewVehicle
         public IActionResult RegisterNewVehicle()
         {
+            ViewData["ownerselect"] = OwnerSelect();
             return View();
         }
 
@@ -72,8 +74,9 @@ namespace Garage3.Models
         {
             vehicle.ArrivalTime = DateTime.Now;
 
+            
             // TODO: How do we post the owner
-            vehicle.Owner = owner;
+            vehicle.Owner = db.Member.Where(m => m.MemberID == owner.MemberID);
             if (ModelState.IsValid)
             {
                 db.Add(vehicle);
@@ -82,7 +85,22 @@ namespace Garage3.Models
             }
             return View(vehicle);
         }
+        private List<SelectListItem> OwnerSelect()
+        {
+            var output = new List<SelectListItem>();
+            var memberlist = db.Member.Where(v => v.MemberID != null);
 
+            foreach (var item in memberlist)
+            {
+                output.Add(new SelectListItem
+                {
+                    Text = item.FirstName +" "+ item.LastName,
+                    Value = item.MemberID.ToString()
+                });
+            }
+            
+            return output;
+        }
         // GET: Vehicles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

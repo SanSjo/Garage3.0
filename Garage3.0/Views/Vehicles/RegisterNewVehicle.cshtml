@@ -14,7 +14,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Owner" class="control-label"></label>
-                <input asp-for="Owner" class="form-control" />
+                <select asp-for="Owner" asp-items="@ViewData["ownerselect"] as List<SelectListItem>" class="form-control" ></select>
                 <span asp-validation-for="Owner" class="text-danger"></span>
             </div>
             <div class="form-group">
