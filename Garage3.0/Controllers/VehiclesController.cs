@@ -210,32 +210,14 @@ namespace Garage3.Models
         // POST: Vehicles/Delete/5
         [HttpPost, ActionName("UnregisterVehicle")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string SelectedVehicle)
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
+            var vehicle = await db.Vehicle.FindAsync(id);
+            db.Vehicle.Remove(vehicle);
 
-            if (SelectedVehicle == null)
-            {
-                return View();
-            }
-
-            // Check which vehicle to remove
-            var vehicleToRemove = await db.Vehicle.Where(v => v.LicenseNumber == SelectedVehicle).FirstAsync();
-
-            // Check where vehicle is parked
-            var parkingSpotToFreeUp = await db.ParkingSpace.Where(v => v.Vehicle == vehicleToRemove).ToListAsync();
-            foreach (var parkingSpot in parkingSpotToFreeUp)
-            {
-                parkingSpot.Vehicle = null;
-            }
-
-            // Remove vehicle from database
-            db.Vehicle.Remove(vehicleToRemove);
-
-            // Save changes to database
             await db.SaveChangesAsync();
-        
+            return RedirectToAction(nameof(Index));
 
-            return RedirectToAction("Index", "Home");
 
         }
 
