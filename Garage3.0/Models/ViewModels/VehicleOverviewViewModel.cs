@@ -12,6 +12,6 @@ namespace Garage3.Models.ViewModels
         public string MembershipType { get; set; }
         public string VehicleType { get; set; }
         public string LicenseNumber { get; set; }
-        public TimeSpan TimeParked { get; set; }
+        public TimeSpan? TimeParked { get; set; }
     }
 }
