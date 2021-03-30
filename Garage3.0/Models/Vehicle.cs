@@ -19,8 +19,7 @@ namespace Garage3.Models
         [Display(Name = "Parking space")]
         public IList<ParkingSpace> ParkedAt { get; set; }
 
-        [Display(Name = "Arrival time")]
-        [DataType(DataType.DateTime)]
+        [Display(Name = "Arrival time")]        
         public DateTime? ArrivalTime { get; set; }
 
         [Required]

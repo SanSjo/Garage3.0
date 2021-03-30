@@ -62,8 +62,7 @@ namespace Garage3.Models
 
         // GET: Vehicles/RegisterNewVehicle
         public IActionResult RegisterNewVehicle()
-        {
-            ViewData["ownerselect"] = OwnerSelect();
+        {            
             return View();
         }
 
@@ -71,17 +70,18 @@ namespace Garage3.Models
         // you want to bind to. For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RegisterNewVehicle([Bind("Id,ArrivalTime,LicenseNumber,Color,Brand,Model,NumberOfWheels,Size")] RegisterNewVehicleViewModel vh)
+        public async Task<IActionResult> RegisterNewVehicle([Bind("MemberID,LicenseNumber,VehicleType,Color,Brand,Model,NumberOfWheels")] RegisterNewVehicleViewModel vh)
         {
-            var vehicle = new Vehicle();
-            vehicle.ArrivalTime = DateTime.Now;
+            var vehicle = new Vehicle();            
             vehicle.LicenseNumber  =  vh.LicenseNumber;
             vehicle.Brand = vh.Brand;
             vehicle.Color  =  vh.Color;
             vehicle.Model = vh.Model;
             vehicle.NumberOfWheels  =  vh.NumberOfWheels;
-            var owner = db.Member.Where(m => m.MemberID == Int32.Parse(vh.MemberID)).FirstOrDefault(); 
+            var owner = db.Member.Where(m => m.MemberID == Int32.Parse(vh.MemberID)).FirstOrDefault();
+            var vehicleType = db.VehicleType.Where(v => v.Type == vh.VehicleType).FirstOrDefault();
             vehicle.Owner  =  owner;
+            vehicle.VehicleType = vehicleType;
             
             
 
@@ -93,23 +93,7 @@ namespace Garage3.Models
             }
             return View(vehicle);
         }
-        private List<SelectListItem> OwnerSelect()
-        {
-            var output = new List<SelectListItem>();
-            var memberlist = db.Member.Where(v => v.MemberID != null).toli;
-
-            foreach (var item in memberlist)
-            {
-                output.Add(new SelectListItem
-                {
-                    Text = item.FirstName +" "+ item.LastName,
-                    Value = item.MemberID.ToString()
-                   
-                });
-            }
-            
-            return output;
-        }
+        
         // GET: Vehicles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
