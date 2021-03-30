@@ -12,10 +12,10 @@ namespace Garage3.Models.ViewModels
 
         public string TimeParked { get; set; }
 
-        public decimal Price { get; set; }
+        public string Price { get; set; }
 
-        public decimal Cost { get; set; }
+        public string Cost { get; set; }
 
-        public decimal Savings { get; set; }
+        public string Savings { get; set; }
     }
 }

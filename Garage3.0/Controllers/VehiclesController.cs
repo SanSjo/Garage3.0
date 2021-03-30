@@ -385,18 +385,18 @@ namespace Garage3.Models
 
             ReceiptOverviewModel receipt = new ReceiptOverviewModel()
             {
-               // Member = $"{member.FirstName} {member.LastName}",
+                Member = $"{vehicle.Owner.FirstName} {vehicle.Owner.LastName}",
                 Vehicle = vehicle.LicenseNumber,
                 TimeParked = (DateTime.Now - vehicle.ArrivalTime).ToString(),
-                Cost = cost,
-                Savings = savings
+                Cost = cost.ToString(),
+                Savings = savings.ToString()
             };
 
-            //TempData["Member"] = receipt.Member;
-            //TempData["Vehicle"] = receipt.Vehicle;
-            //TempData["Time Parked"] = receipt.TimeParked;
-            //TempData["Cost"] = receipt.Cost;
-            //TempData["Savings"] = receipt.Savings;
+            TempData["Member"] = receipt.Member;
+            TempData["Vehicle"] = receipt.Vehicle;
+            TempData["Time Parked"] = receipt.TimeParked;
+            TempData["Cost"] = receipt.Cost;
+            TempData["Savings"] = receipt.Savings;
 
             vehicle.ArrivalTime = null;
 

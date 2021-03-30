@@ -96,10 +96,10 @@
                     </div>
                 </div>
             }
+            <div class="content">
+                @RenderBody()
+            </div>
         </main>
-    </div>
-    <div class="content">
-        @RenderBody()
     </div>
     <!-- End content -->
     <footer class="border-top footer text-muted dont-print">
@@ -113,5 +113,13 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/scripts.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#successfailuremodal").modal('show');
+        });
+
+        document.getElementById("btnPrint").addEventListener('click', function () { window.print() });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
