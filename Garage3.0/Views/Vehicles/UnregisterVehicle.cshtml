@@ -1,11 +1,12 @@
 ﻿@model Garage3.Models.Vehicle
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "UnregisterVehicle";
 }
 
-<h1>Details</h1>
+<h1>Are you sure</h1>
 
+<h3>you want to Unregister this Vehicle?</h3>
 <div>
     <h4>Vehicle</h4>
     <hr />
@@ -47,10 +48,10 @@
             @Html.DisplayFor(model => model.NumberOfWheels)
         </dd>
     </dl>
-</div>
-<form asp-action="UnregisterVehicle">
+
+    <form asp-action="UnregisterVehicle">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="UnregisterVehicle" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
-</form>
-
+    </form>
+</div>
