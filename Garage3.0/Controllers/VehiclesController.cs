@@ -364,14 +364,14 @@ namespace Garage3.Models
 
         [HttpPost, ActionName("RetrieveParkedVehicle")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RetrieveConfirmed(string selectedVehicle)
+        public async Task<IActionResult> RetrieveConfirmed([Bind("SelectedVehicle")] string SelectedVehicle)
         {
-            if (String.IsNullOrEmpty(selectedVehicle))
+            if (String.IsNullOrEmpty(SelectedVehicle))
             {
                 return View();
             }
 
-            var vehicle = await db.Vehicle.Where(v => v.LicenseNumber == selectedVehicle).FirstAsync();
+            var vehicle = await db.Vehicle.Where(v => v.LicenseNumber == SelectedVehicle).FirstAsync();
             var member = await db.Member.Where(m => m == vehicle.Owner).FirstAsync();
             var parkingSpots = await db.ParkingSpace.Where(p => vehicle.ParkedAt.Contains(p)).FirstAsync();
 
