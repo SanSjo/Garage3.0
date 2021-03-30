@@ -88,7 +88,7 @@ namespace Garage3.Controllers
         }
 
         [AcceptVerbs("GET", "POST")]
-        public async Task<IActionResult> IsAlreadyAMember(string PersonalIdentityNumber)
+        public async Task<IActionResult> IsAlreadyAMember(string PersonalIdentityNumber, int MemberID)
         {
             if (PersonalIdentityNumber == "1")
             {
@@ -128,7 +128,7 @@ namespace Garage3.Controllers
                 return Json("Invalid date in this Personal Identity Number");
             }
 
-            if (await db.Member.FirstOrDefaultAsync(m => m.PersonalIdentityNumber == PersonalIdentityNumber) != null)
+            if (await db.Member.FirstOrDefaultAsync(m => m.PersonalIdentityNumber == PersonalIdentityNumber && m.MemberID != MemberID) != null)
             {
                 return Json("Member already exists");
             }
