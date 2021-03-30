@@ -221,7 +221,7 @@ namespace Garage3.Controllers
         }
 
         // GET: Members/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> UnregisterMember(int? id)
         {
             if (id == null)
             {
@@ -239,11 +239,18 @@ namespace Garage3.Controllers
         }
 
         // POST: Members/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("UnregisterMember")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var member = await db.Member.FindAsync(id);
+            //var memberVehicles = new List<Vehicle>();
+            var memberVehicles = db.Vehicle.Where(v => v.Owner == member);
+
+            foreach (var vehicle in memberVehicles)
+            {
+                db.Vehicle.Remove(vehicle);
+            }
             db.Member.Remove(member);
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

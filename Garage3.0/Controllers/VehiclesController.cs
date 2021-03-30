@@ -149,7 +149,7 @@ namespace Garage3.Models
         }
 
         // GET: Vehicles/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> UnregisterVehicle(int? id)
         {
             if (id == null)
             {
@@ -167,12 +167,13 @@ namespace Garage3.Models
         }
 
         // POST: Vehicles/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("UnregisterVehicle")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var vehicle = await db.Vehicle.FindAsync(id);
             db.Vehicle.Remove(vehicle);
+
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
