@@ -177,37 +177,37 @@ namespace Garage3.Models
             return View(vehicle);
         }
 
-        //public async Task<IActionResult> RetrieveVehicle(string selectVehicle)
-        //{
-        //    IQueryable<string> genreQuery = from m in db.Vehicle
-        //                                    orderby m.LicenseNumber
-        //                                    select m.LicenseNumber;
-
-        //    var vehicle = from v in db.Vehicle
-        //                 select v;
-
-        //    if (!String.IsNullOrEmpty(selectVehicle))
-        //    {
-        //        vehicle = vehicle.Where(g => g.LicenseNumber == selectVehicle);
-        //    }
-
-        //    var selectVehicleVM = new RetrieveVehicleViewModel
-        //    {
-        //        Vehicles = new SelectList(await genreQuery.Distinct().ToListAsync()),
-
-
-        //    };
-
-
-        //    return View(selectVehicleVM);
-        //}
-
-
-
-        public ActionResult RetrieveVehicle()
+        public async Task<IActionResult> RetrieveParkedVehicle(string selectVehicle)
         {
-            return View();
+            IQueryable<string> genreQuery = from m in db.Vehicle
+                                            orderby m.LicenseNumber
+                                            select m.LicenseNumber;
+
+            var vehicle = from v in db.Vehicle
+                          select v;
+
+            if (!String.IsNullOrEmpty(selectVehicle))
+            {
+                vehicle = vehicle.Where(g => g.LicenseNumber == selectVehicle);
+            }
+
+            var selectVehicleVM = new RetrieveVehicleViewModel
+            {
+                Vehicles = new SelectList(await genreQuery.Distinct().ToListAsync()),
+
+
+            };
+
+
+            return View(selectVehicleVM);
         }
+
+
+
+        //public ActionResult RetrieveParkedVehicle()
+        //{
+        //    return View();
+        //}
 
 
         // POST: Vehicles/Delete/5
@@ -362,23 +362,18 @@ namespace Garage3.Models
             return View(nameof(NoSpaceForVehicle));
         }
 
-        [HttpPost, ActionName("RetrieveVehicle")]
+        [HttpPost, ActionName("RetrieveParkedVehicle")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RetrieveConfirmed([Bind("LicenseNumber")] string selectedVehicle)
+        public async Task<IActionResult> RetrieveConfirmed([Bind("SelectedVehicle")] string SelectedVehicle)
         {
-            if (String.IsNullOrEmpty(selectedVehicle))
+            if (String.IsNullOrEmpty(SelectedVehicle))
             {
                 return View();
             }
 
-            var vehicle = await db.Vehicle.Where(v => v.LicenseNumber == selectedVehicle).FirstAsync();
-            var member = await db.Member.Where(m => m == vehicle.Owner).FirstAsync();
-            var parkingSpots = await db.ParkingSpace.Where(p => vehicle.ParkedAt.Contains(p)).FirstAsync();
-
-            foreach (var parkingSpot in vehicle.ParkedAt)
-            {
-                parkingSpot.Vehicle.Clear();
-            }
+            var vehicle = await db.Vehicle.Include(p=>p.ParkedAt).Where(v => v.LicenseNumber == SelectedVehicle).FirstAsync();            
+            
+            vehicle.ParkedAt.Clear();            
 
             decimal cost = 50*(decimal)(DateTime.Now - (DateTime)vehicle.ArrivalTime).TotalHours, savings = 0;
 
@@ -391,18 +386,18 @@ namespace Garage3.Models
 
             ReceiptOverviewModel receipt = new ReceiptOverviewModel()
             {
-                Member = $"{member.FirstName} {member.LastName}",
+               // Member = $"{member.FirstName} {member.LastName}",
                 Vehicle = vehicle.LicenseNumber,
                 TimeParked = (DateTime.Now - vehicle.ArrivalTime).ToString(),
                 Cost = cost,
                 Savings = savings
             };
 
-            TempData["Member"] = receipt.Member;
-            TempData["Vehicle"] = receipt.Vehicle;
-            TempData["Time Parked"] = receipt.TimeParked;
-            TempData["Cost"] = receipt.Cost;
-            TempData["Savings"] = receipt.Savings;
+            //TempData["Member"] = receipt.Member;
+            //TempData["Vehicle"] = receipt.Vehicle;
+            //TempData["Time Parked"] = receipt.TimeParked;
+            //TempData["Cost"] = receipt.Cost;
+            //TempData["Savings"] = receipt.Savings;
 
             vehicle.ArrivalTime = null;
 

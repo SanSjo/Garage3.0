@@ -1,8 +1,8 @@
 ﻿@inject Garage3.Services.IRetrieveVehicleService service
-@model Garage3.Models.Vehicle
+@model Garage3.Models.ViewModels.RetrieveVehicleViewModel
 
 @{
-    ViewData["Title"] = "Retrieve Parked Vehicle";
+    ViewData["Title"] = "RetrieveParkedVehicle";
 }
 
 <h1>Retrieve </h1>
@@ -13,13 +13,12 @@
     <hr />
 
     <div class="container w-25">
-        <form asp-controller="Vehicles" asp-action="RetrieveVehicle" >
-
+        <form asp-controller="Vehicles" asp-action="RetrieveParkedVehicle">
 
             <label>Select a Licence number</label>
 
             <div class="form-group ">
-                <select asp-for="LicenseNumber" asp-items="@await service.GetParkedVehicles()" class="form-control box-adjustment ">
+                <select asp-for="SelectedVehicle" asp-items="@await service.GetParkedVehicles()" class="form-control box-adjustment ">
                     <option selected="selected" value="">Please select</option>
                 </select>
             </div>

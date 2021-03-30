@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Garage3.Data;
 using Garage3.Models;
+using Garage3.Models.ViewModels;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,15 +24,19 @@ namespace Garage3.Controllers
 
         // GET: Members
         public async Task<IActionResult> Index(string search)
-        {
-            List<MembersViewModel> members = await db.Member
+        {        
+
+        List<MembersViewModel> members = await db.Member
                 .Select(member => new MembersViewModel
                 {
+                    PersonalIdentityNumber=member.PersonalIdentityNumber,
+                    Joined=member.Joined,
+                    ExtendenMemberShipEndDate=member.ExtendedMemberShipEndDate,
                     MemberID = member.MemberID,
                     FirstName = member.FirstName,
                     LastName = member.LastName,
-                    NrOfVehicles = (from vehicle in db.Vehicle.Where(v => v.Owner.Equals(member)) select vehicle)
-                                                      .ToList().Count
+                    NrOfVehicles = (from vehicle in db.Vehicle.Where(v => v.Owner.Equals(member)) select vehicle).ToList().Count,
+                    MembershipType = db.Member.Include(m => m.MembershipType).Where(m => m.MemberID == member.MemberID).Select(m => m.MembershipType.Type).FirstOrDefault()
                 }).ToListAsync();
 
             if (!string.IsNullOrEmpty(search))
@@ -66,7 +71,19 @@ namespace Garage3.Controllers
 
             ViewData["OwnedVehicles"] = await (from vehicle in db.Vehicle.Where(v => v.Owner == member) select vehicle).ToListAsync();
 
-            return View(member);
+            var memberViewModel = new MembersViewModel
+               {
+                   PersonalIdentityNumber = member.PersonalIdentityNumber,
+                   Joined = member.Joined,
+                   ExtendenMemberShipEndDate = member.ExtendedMemberShipEndDate,
+                   MemberID = member.MemberID,
+                   FirstName = member.FirstName,
+                   LastName = member.LastName,
+                   NrOfVehicles = (from vehicle in db.Vehicle.Where(v => v.Owner.Equals(member)) select vehicle).ToList().Count,
+                   MembershipType = db.Member.Include(m => m.MembershipType).Where(m => m.MemberID == member.MemberID).Select(m => m.MembershipType.Type).FirstOrDefault()
+               };
+
+            return View(memberViewModel);
         }
 
         // GET: Members/Create
