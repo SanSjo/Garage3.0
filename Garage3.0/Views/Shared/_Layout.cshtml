@@ -76,7 +76,7 @@
                 {
                     <div id="successfailuremodal" class="modal fade">
                         <div class="modal-dialog">
-                            <div class="modal-content">
+                            <div class="modal-content" style="color:whitesmoke">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Receipt</h5>
                                     <button type="button" class="close d-print-none" data-dismiss="modal">&times;</button>
@@ -120,6 +120,6 @@
 
         document.getElementById("btnPrint").addEventListener('click', function () { window.print() });
     </script>
-
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
