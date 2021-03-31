@@ -147,36 +147,30 @@ namespace Garage3.Migrations
                     b.Property<int?>("OwnerMemberID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("VehicleTypeTypeID")
-                        .HasColumnType("int");
+                    b.Property<string>("VehicleTypeType")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerMemberID");
 
-                    b.HasIndex("VehicleTypeTypeID");
+                    b.HasIndex("VehicleTypeType");
 
                     b.ToTable("Vehicle");
                 });
 
             modelBuilder.Entity("Garage3.Models.VehicleType", b =>
                 {
-                    b.Property<int>("TypeID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<float>("Size")
                         .HasColumnType("real");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("imgSrc")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("TypeID");
+                    b.HasKey("Type");
 
                     b.ToTable("VehicleType");
                 });
@@ -222,7 +216,7 @@ namespace Garage3.Migrations
 
                     b.HasOne("Garage3.Models.VehicleType", "VehicleType")
                         .WithMany()
-                        .HasForeignKey("VehicleTypeTypeID");
+                        .HasForeignKey("VehicleTypeType");
 
                     b.Navigation("Owner");
 

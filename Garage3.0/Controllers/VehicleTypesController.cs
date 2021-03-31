@@ -26,7 +26,7 @@ namespace Garage3.Controllers
         }
 
         // GET: VehicleTypes/Details/5
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
@@ -34,7 +34,7 @@ namespace Garage3.Controllers
             }
 
             var vehicleType = await db.VehicleType
-                .FirstOrDefaultAsync(m => m.TypeID == id);
+                .FirstOrDefaultAsync(m => m.Type == id);
             if (vehicleType == null)
             {
                 return NotFound();
@@ -66,8 +66,9 @@ namespace Garage3.Controllers
         }
 
         // GET: VehicleTypes/Edit/5
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(string id)
         {
+            // BUG: Cannot Edit Type need to add typeid
             if (id == null)
             {
                 return NotFound();
@@ -78,7 +79,7 @@ namespace Garage3.Controllers
             {
                 return NotFound();
             }
-            return View(vehicleType.TypeID);
+            return View(vehicleType);
         }
 
         // POST: VehicleTypes/Edit/5
@@ -86,9 +87,9 @@ namespace Garage3.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Type,Size,imgSrc")] VehicleType vehicleType)
+        public async Task<IActionResult> Edit(string id, [Bind("Type,Size,imgSrc")] VehicleType vehicleType)
         {
-            if (id != vehicleType.TypeID)
+            if (id != vehicleType.Type)
             {
                 return NotFound();
             }
@@ -102,7 +103,7 @@ namespace Garage3.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!VehicleTypeExists(vehicleType.TypeID))
+                    if (!VehicleTypeExists(vehicleType.Type))
                     {
                         return NotFound();
                     }
@@ -117,7 +118,7 @@ namespace Garage3.Controllers
         }
 
         // GET: VehicleTypes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
@@ -125,7 +126,7 @@ namespace Garage3.Controllers
             }
 
             var vehicleType = await db.VehicleType
-                .FirstOrDefaultAsync(m => m.TypeID == id);
+                .FirstOrDefaultAsync(m => m.Type == id);
             if (vehicleType == null)
             {
                 return NotFound();
@@ -137,7 +138,7 @@ namespace Garage3.Controllers
         // POST: VehicleTypes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var vehicleTypesInUse = db.Vehicle.Include(v => v.VehicleType).Select(v=>v.VehicleType);            
             var vehicleType = await db.VehicleType.FindAsync(id);
@@ -150,9 +151,9 @@ namespace Garage3.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool VehicleTypeExists(int id)
+        private bool VehicleTypeExists(string id)
         {
-            return db.VehicleType.Any(e => e.TypeID == id);
+            return db.VehicleType.Any(e => e.Type == id);
         }
     }
 }
