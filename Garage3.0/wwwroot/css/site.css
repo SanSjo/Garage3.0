@@ -28,6 +28,10 @@ body {
     color: red;
 }
 
+.table {
+    color: whitesmoke;
+}
+
 td {
     color: whitesmoke;
 }
@@ -35,9 +39,9 @@ td {
 tr {
     color: whitesmoke;
 }
-/***** Modal styling *****/
+    /***** Modal styling *****/
 
-.modal-content {
+    .modal-content {
     background-color: #131313
 }
 

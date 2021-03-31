@@ -82,6 +82,7 @@ namespace Garage3.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Type")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MembershiptTypeID");
@@ -146,30 +147,36 @@ namespace Garage3.Migrations
                     b.Property<int?>("OwnerMemberID")
                         .HasColumnType("int");
 
-                    b.Property<string>("VehicleTypeType")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("VehicleTypeTypeID")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerMemberID");
 
-                    b.HasIndex("VehicleTypeType");
+                    b.HasIndex("VehicleTypeTypeID");
 
                     b.ToTable("Vehicle");
                 });
 
             modelBuilder.Entity("Garage3.Models.VehicleType", b =>
                 {
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("TypeID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<float>("Size")
                         .HasColumnType("real");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("imgSrc")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Type");
+                    b.HasKey("TypeID");
 
                     b.ToTable("VehicleType");
                 });
@@ -215,7 +222,7 @@ namespace Garage3.Migrations
 
                     b.HasOne("Garage3.Models.VehicleType", "VehicleType")
                         .WithMany()
-                        .HasForeignKey("VehicleTypeType");
+                        .HasForeignKey("VehicleTypeTypeID");
 
                     b.Navigation("Owner");
 
