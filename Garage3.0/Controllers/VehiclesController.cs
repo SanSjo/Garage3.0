@@ -70,7 +70,7 @@ namespace Garage3.Models
         public async Task<IActionResult> RegisterNewVehicle([Bind("MemberID,LicenseNumber,VehicleType,Color,Brand,Model,NumberOfWheels")] RegisterNewVehicleViewModel vh)
         {
             var vehicle = new Vehicle();            
-            vehicle.LicenseNumber  =  vh.LicenseNumber;
+            vehicle.LicenseNumber  =  vh.LicenseNumber.ToUpper();
             vehicle.Brand = vh.Brand;
             vehicle.Color  =  vh.Color;
             vehicle.Model = vh.Model;
@@ -364,13 +364,14 @@ namespace Garage3.Models
             savings = (vehicle.Owner.MembershipType.Discount / 100) * discountValue;
 
             cost -= savings;
+            
 
             ReceiptOverviewModel receipt = new ReceiptOverviewModel()
             {
                 Member = $"{vehicle.Owner.FirstName} {vehicle.Owner.LastName}",
                 Vehicle = vehicle.LicenseNumber,
                 TimeParked = (DateTime.Now - vehicle.ArrivalTime).ToString(),
-                Cost = cost.ToString(),
+                Cost = String.Format("{0,00:C2}", decimal.Round(cost, 2).ToString()),
                 Savings = savings.ToString()
             };
 

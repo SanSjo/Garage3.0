@@ -13,19 +13,22 @@ namespace Garage3.Models
         public int MemberID { get; set; }
 
         // TODO: check PID so that the month and day are valid numbers
+        [Required]
         [Display(Name = "Personal Identity Number")]
         [Remote(action: nameof(MembersController.IsAlreadyAMember), controller: "Members" ,AdditionalFields="MemberID")]        
         public string PersonalIdentityNumber { get; set; }
 
         // TODO: Add check that first name isnt the same as last name
+        [Required]
         [Display(Name = "First Name")]
         [MinLength(2, ErrorMessage = "Name must be at least 2 characters long.")]
         [Remote(action: nameof(MembersController.SameName), controller: "Members", AdditionalFields = "LastName")]
         public string FirstName { get; set; }
 
+        [Required]
         [Display(Name = "Last Name")]
         [MinLength(2, ErrorMessage = "Name must be at least 2 characters long.")]
-        [Remote(action: nameof(MembersController.SameName), controller: "Members", AdditionalFields = "FirstName")]
+        [Remote(action: nameof(MembersController.SameName), controller: "Members", AdditionalFields = "FirstName")]        
         public string LastName { get; set; }
 
         public MembershipType MembershipType { get; set; }
