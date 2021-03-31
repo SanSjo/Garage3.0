@@ -18,7 +18,7 @@
 
 <body>
     <!-- Sidebar -->
-    <nav class="sidebar active">
+    <nav class="sidebar active d-print-none">
         <div class="col text-center logo">
             <a asp-controller="Home" asp-action="Index"><img src="~/images/Logo.png" /></a>
         </div>
@@ -79,7 +79,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">Receipt</h5>
-                                <button type="button" class="close dont-print" data-dismiss="modal">&times;</button>
+                                <button type="button" class="close d-print-none" data-dismiss="modal">&times;</button>
                             </div>
                             <div class="modal-body">
                                 <strong>Member:</strong> @TempData["Member"]<br />
@@ -87,7 +87,7 @@
                                 <strong>Time parked:</strong>  @TempData["Time Parked"]<br />
                                 <strong>Amount Saved:</strong> @TempData["Savings"]<br />
                                 <strong>Total cost:</strong>  @TempData["Cost"]<br />
-                                <div class="row">
+                                <div class="row d-print-none">
                                     <a class="btn btn-primary dont-print ml-1" asp-area="" asp-controller="Home" asp-action="Index">Close</a>
                                     <button class="btn btn-primary dont-print ml-3" asp-area="" asp-controller="Home" asp-action="Index" id="btnPrint">Print</button>
                                 </div>
@@ -102,7 +102,7 @@
         </main>
     </div>
     <!-- End content -->
-    <footer class="border-top footer text-muted dont-print">
+    <footer class="border-top footer text-muted d-print-none">
         <div class="container text-center">
             &copy; 2021 Lexicon NA21 Group 4 - Garage 3 - <a class="link-primary" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
@@ -120,6 +120,5 @@
 
         document.getElementById("btnPrint").addEventListener('click', function () { window.print() });
     </script>
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
