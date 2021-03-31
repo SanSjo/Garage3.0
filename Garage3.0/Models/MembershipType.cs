@@ -13,7 +13,9 @@ namespace Garage3.Models
     {
         [Key]
         public int MembershiptTypeID { get; set; }        
+        [Required]
         public string Type { get; set; }
+        [Required]
         public int Discount { get; set; }
     }
 }
