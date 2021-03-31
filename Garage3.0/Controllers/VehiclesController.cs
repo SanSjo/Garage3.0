@@ -22,6 +22,8 @@ namespace Garage3.Models
         }
 
         // GET: Vehicles
+
+        //includes search functions in overview
         public async Task<IActionResult> Index(string search)
         {
             List<VehicleOverviewViewModel> output = await db.Vehicle.Include(v=>v.Owner).Include(v=>v.VehicleType).Include(v=>v.Owner.MembershipType).Select(vehicle=>new VehicleOverviewViewModel                
@@ -127,7 +129,7 @@ namespace Garage3.Models
                     var currentVehicle = db.Vehicle.FirstOrDefault(v => v.Id == vehicle.Id);
                     if (currentVehicle == null)
                         return NotFound();
-            
+            // Set to avoid errors with foreign keys
                     currentVehicle.LicenseNumber = vehicle.LicenseNumber;
                     currentVehicle.Color = vehicle.Color;
                     currentVehicle.Brand = vehicle.Brand;
@@ -176,6 +178,7 @@ namespace Garage3.Models
 
         public async Task<IActionResult> RetrieveParkedVehicle(string selectVehicle)
         {
+            // TODO: Remove replaced by service
             IQueryable<string> genreQuery = from m in db.Vehicle
                                             orderby m.LicenseNumber
                                             select m.LicenseNumber;
@@ -242,6 +245,8 @@ namespace Garage3.Models
             int memberID;
             return memberID;
         }
+
+        // BUG: doesnt check unique licensenumber
         public IActionResult Parking()
         {
             return View();
@@ -252,7 +257,7 @@ namespace Garage3.Models
             if (VehicleInDatabase(LicenseNumber))
             {
                 var returnedView = ParkVehicle(LicenseNumber);
-                // TODO: Receipt
+                
                 return RedirectToAction(returnedView);
             }
             else

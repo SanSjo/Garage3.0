@@ -145,6 +145,7 @@ namespace Garage3.Controllers
                 return Json("Invalid date in this Personal Identity Number");
             }
 
+            // check member id too so that edit works with remote validation
             if (await db.Member.FirstOrDefaultAsync(m => m.PersonalIdentityNumber == PersonalIdentityNumber && m.MemberID != MemberID) != null)
             {
                 return Json("Member already exists");
@@ -166,11 +167,12 @@ namespace Garage3.Controllers
 
                 member.Joined = DateTime.Now;
 
-
+                // todo: refactor to method
                 string PINformat = Regex.Replace(member.PersonalIdentityNumber, @"[^0-9]", "");
                 string PINDate = PINformat.Substring(0, 8);
                 DateTime customerAge = DateTime.ParseExact(PINDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
 
+                // give automatic pro membership at join
                 if (customerAge < DateTime.Now.AddYears(-65))
                 {
                     member.ExtendedMemberShipEndDate = DateTime.Now.AddYears(2);
@@ -260,10 +262,10 @@ namespace Garage3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var member = await db.Member.FindAsync(id);
-            //var memberVehicles = new List<Vehicle>();
+            var member = await db.Member.FindAsync(id);            
             var memberVehicles = db.Vehicle.Where(v => v.Owner == member);
 
+            // removes all vehicles registered to member
             foreach (var vehicle in memberVehicles)
             {
                 db.Vehicle.Remove(vehicle);

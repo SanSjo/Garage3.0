@@ -139,6 +139,7 @@ namespace Garage3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            // check to make sure you dont delete membershiptypes with active members
             var membersWithSelectedMembershipType = db.Member.Include(m => m.MembershipType).Where(m => m.MembershipType.MembershiptTypeID == id);
             if (membersWithSelectedMembershipType.Count()>0)
             {
