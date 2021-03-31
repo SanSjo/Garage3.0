@@ -23,44 +23,48 @@
 
 <body>
     <!--Div that will hold the pie chart-->
-    <br />
-    <div class="chart_div" id="chart_div"></div>
-    <br />
-    <div class="card-deck">
-        @foreach (var vehicleType in Model.VehicleTypeCount)
-        {
-            if (vehicleType.AmountAbleToPark < 1)
-            {
-
-                <div class="card w-75 text-white bg-danger" style="width: 18rem;">
-                    <img class="card-img-top" src="@vehicleType.ImgSrc" alt="Card image cap">
-                    <div class="card-body">
-                        <div class="vehicleTypeCount">
-                            Type: @vehicleType.Type <br />
-                            Parked: @vehicleType.AmountParked<br />
-                            Available: @vehicleType.AmountAbleToPark
-                        </div>
-                    </div>
-                </div>
-
-            }
-            else
-            {
-
-                <div class="card w-75 bg-success text-white" style="width: 18rem;">
-                    <img class="card-img-top" src="@vehicleType.ImgSrc" alt="Card image cap">
-                    <div class="card-body">
-                        <div class="vehicleTypeCount">
-                            Type: @vehicleType.Type <br />
-                            Parked: @vehicleType.AmountParked<br />
-                            Available: @vehicleType.AmountAbleToPark
-                        </div>
-                    </div>
-                </div>
-
-            }
-        }
+    <br />    
+    <div class="row justify-content-center align-content-center">
+        <div class="col-8 text-center justify-content-center align-content-center">
+            <div class="chart_div" id="chart_div"></div>
+        </div>
     </div>
+        <br />
+        <div class="card-deck">
+            @foreach (var vehicleType in Model.VehicleTypeCount)
+            {
+                if (vehicleType.AmountAbleToPark < 1)
+                {
+
+                    <div class="card w-75 text-white bg-danger" style="width: 18rem;">
+                        <img class="card-img-top" src="@vehicleType.ImgSrc" alt="Card image cap">
+                        <div class="card-body">
+                            <div class="vehicleTypeCount">
+                                Type: @vehicleType.Type <br />
+                                Parked: @vehicleType.AmountParked<br />
+                                Available: @vehicleType.AmountAbleToPark
+                            </div>
+                        </div>
+                    </div>
+
+                }
+                else
+                {
+
+                    <div class="card w-75 bg-success text-white" style="width: 18rem;">
+                        <img class="card-img-top" src="@vehicleType.ImgSrc" alt="Card image cap">
+                        <div class="card-body">
+                            <div class="vehicleTypeCount">
+                                Type: @vehicleType.Type <br />
+                                Parked: @vehicleType.AmountParked<br />
+                                Available: @vehicleType.AmountAbleToPark
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            }
+        </div>    
 
     @*
         Scripts
@@ -80,6 +84,11 @@
         // draws it.
         function drawChart() {
 
+            var ticksAxisH = [];
+            for (var i = 0; i < @Model.SlotsTotal+1; i++) {
+                ticksAxisH.push(i);
+                };
+
             var data = google.visualization.arrayToDataTable([
                 ['Type', 'Unavailable Parking Spaces', 'Free Parking Spaces'],
                 ['Parking Space',@Model.SlotsTaken,@Model.SlotsTotal-@Model.SlotsTaken]
@@ -88,13 +97,16 @@
                 backgroundColor: '#131313',
                 color: '#f5f5f5',
                 colors: ['red', 'green'],
-                width: 987,
+                width: 800,
                 height: 100,
                 legend: { position: 'top', maxLines: 3, textStyle: { color: '#f5f5f5' } },
-                bar: { groupWidth: '100%' },
+                //bar: { groupWidth: '100%' },
                 isStacked: true,
                 vAxis: { textStyle: { color: '#f5f5f5' },},
                 hAxis: {
+                    ticks: ticksAxisH,
+                    minValue: 0,
+                    gridlines: { count: -1 },
                     titleTextStyle: { color: '#f5f5f5' },
                     textStyle:{color: '#f5f5f5'},
                     viewWindow: {

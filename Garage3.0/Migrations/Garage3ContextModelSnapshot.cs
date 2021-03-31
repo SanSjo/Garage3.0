@@ -82,6 +82,7 @@ namespace Garage3.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Type")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MembershiptTypeID");

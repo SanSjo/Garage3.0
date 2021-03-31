@@ -12,17 +12,17 @@ namespace Garage3.Controllers
 {
     public class VehicleTypesController : Controller
     {
-        private readonly Garage3Context _context;
+        private readonly Garage3Context db;
 
         public VehicleTypesController(Garage3Context context)
         {
-            _context = context;
+            db = context;
         }
 
         // GET: VehicleTypes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.VehicleType.ToListAsync());
+            return View(await db.VehicleType.ToListAsync());
         }
 
         // GET: VehicleTypes/Details/5
@@ -33,7 +33,7 @@ namespace Garage3.Controllers
                 return NotFound();
             }
 
-            var vehicleType = await _context.VehicleType
+            var vehicleType = await db.VehicleType
                 .FirstOrDefaultAsync(m => m.Type == id);
             if (vehicleType == null)
             {
@@ -58,8 +58,8 @@ namespace Garage3.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(vehicleType);
-                await _context.SaveChangesAsync();
+                db.Add(vehicleType);
+                await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(vehicleType);
@@ -68,12 +68,13 @@ namespace Garage3.Controllers
         // GET: VehicleTypes/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
+            // BUG: Cannot Edit Type need to add typeid
             if (id == null)
             {
                 return NotFound();
             }
 
-            var vehicleType = await _context.VehicleType.FindAsync(id);
+            var vehicleType = await db.VehicleType.FindAsync(id);
             if (vehicleType == null)
             {
                 return NotFound();
@@ -97,8 +98,8 @@ namespace Garage3.Controllers
             {
                 try
                 {
-                    _context.Update(vehicleType);
-                    await _context.SaveChangesAsync();
+                    db.Update(vehicleType);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -124,7 +125,7 @@ namespace Garage3.Controllers
                 return NotFound();
             }
 
-            var vehicleType = await _context.VehicleType
+            var vehicleType = await db.VehicleType
                 .FirstOrDefaultAsync(m => m.Type == id);
             if (vehicleType == null)
             {
@@ -132,22 +133,27 @@ namespace Garage3.Controllers
             }
 
             return View(vehicleType);
-        }
+        }        
 
         // POST: VehicleTypes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var vehicleType = await _context.VehicleType.FindAsync(id);
-            _context.VehicleType.Remove(vehicleType);
-            await _context.SaveChangesAsync();
+            var vehicleTypesInUse = db.Vehicle.Include(v => v.VehicleType).Select(v=>v.VehicleType);            
+            var vehicleType = await db.VehicleType.FindAsync(id);
+            if (vehicleTypesInUse.Contains(vehicleType))
+            {
+                return View("VehicleWithVehicleTypeExists");
+            }
+            db.VehicleType.Remove(vehicleType);
+            await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool VehicleTypeExists(string id)
         {
-            return _context.VehicleType.Any(e => e.Type == id);
+            return db.VehicleType.Any(e => e.Type == id);
         }
     }
 }
